@@ -1,37 +1,43 @@
-import { firebaseAuth } from '@/config/FirebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+"use client";
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { firebaseAuth } from '@/config/FirebaseConfig';
+import { toast } from 'react-toastify';
+import useAuthenticated from '@/hooks/useAuthenticated';
+import { useRouter } from 'next/navigation';
 
+export default function Page() {
+    const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-const RegisterPage: React.FC = () => {
-
-
-    const handleForm = async (formData: any) => {
+    const handleRegister = async () => {
         try {
-            console.log(formData);
-
-            // await createUserWithEmailAndPassword(firebaseAuth, formData.email, formData.password);
+            await createUserWithEmailAndPassword(firebaseAuth, email, password);
             console.log('User registered successfully!');
         } catch (error) {
             console.error('Error registering user:', error);
+            toast.error('Error registering user');
         }
     };
 
     return (
         <div>
             <h2>Register</h2>
-            <form action={handleForm}>
+            <form>
                 <label>Email:</label>
                 <input
                     type="email"
-                    name='email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
-
                 <label>Password:</label>
-                <input type="password"
-                    name='password'
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">
+                <button type="button" onClick={handleRegister}>
                     Register
                 </button>
             </form>
@@ -39,4 +45,3 @@ const RegisterPage: React.FC = () => {
     );
 };
 
-export default RegisterPage;
