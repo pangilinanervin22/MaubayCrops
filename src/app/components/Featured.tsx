@@ -1,8 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 interface FeaturedProps {}
 
 const Featured: React.FC<FeaturedProps> = ({}) => {
+  const router = useRouter();
   return (
     <section className="min-h-full p-6 bg-extra-light-green">
       <h3 className="text-3xl text-center font-bold mb-5">
@@ -10,7 +13,12 @@ const Featured: React.FC<FeaturedProps> = ({}) => {
       </h3>
       <div className="h-1 w-40 mx-auto bg-primary mb-5"></div>
       <section className="grid grid-cols-categories gap-4 place-content-center">
-        <section className="relative">
+        <section
+          className="relative cursor-pointer"
+          onClick={() => {
+            router.push("/products");
+          }}
+        >
           <span className="absolute text-primary bg-white font-bold text-2xl z-30 w-full text-center top-1/2">
             Fertilizers
           </span>
