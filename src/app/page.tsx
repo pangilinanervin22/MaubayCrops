@@ -1,9 +1,17 @@
+"use client";
+
+import { Hero } from "./components/Hero";
+import { Featured } from "./components/Featured";
+import { Navbar } from "./components/Navbar";
 
 export default function Home() {
   return (
-    <main>
-      <h1>Hello World</h1>
-      <h2>2</h2>
+    <main className="min-h-screen">
+      <Navbar />
+      <article>
+        <Hero />
+        <Featured />
+      </article>
     </main>
   );
 }
