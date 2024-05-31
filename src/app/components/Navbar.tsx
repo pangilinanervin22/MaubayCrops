@@ -8,6 +8,7 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Brand } from "./Brand";
 import { Sidebar } from "./Sidebar";
@@ -16,6 +17,7 @@ interface NavbarProps {}
 
 const Navbar: React.FC<NavbarProps> = ({}) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const router = useRouter();
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
@@ -39,7 +41,14 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
           </div>
         </section>
         <section className="hidden lg:flex space-x-6">
-          <button className="btn-green">Login</button>
+          <button
+            className="btn-green"
+            onClick={() => {
+              router.push("/login");
+            }}
+          >
+            Login
+          </button>
           <IconHeart />
           <IconShoppingCart />
           <IconUserCircle />

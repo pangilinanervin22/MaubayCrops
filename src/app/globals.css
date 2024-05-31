@@ -4,6 +4,6 @@
 
 @layer components {
   .btn-green {
-    @apply bg-primary w-24 text-white font-bold p-1 rounded-md;
+    @apply bg-primary w-24 text-white font-bold p-1 rounded-md transition-colors duration-200 hover:bg-[#00704f];
   }
 }
