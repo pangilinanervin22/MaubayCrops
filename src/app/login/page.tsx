@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuthenticated, useLogin } from "@/hooks/Authentication";
 
-import { Navbar } from "../../components/Navbar";
-
 export default function Page() {
   const router = useRouter();
   const { auth, isAuthenticated } = useAuthenticated();
@@ -43,10 +41,8 @@ export default function Page() {
 
       const res = await login(email, password);
 
-      if (res.success === true)
-        toast.success(res.message);
-      else
-        toast.error(res.message);
+      if (res.success === true) toast.success(res.message);
+      else toast.error(res.message);
 
       // TODO: men need pa dito mag query add to `users` collection para malagyan yun, sa auth lang kasi mapupunta pag hindi nag add to users collection
     } catch (error) {
@@ -61,8 +57,6 @@ export default function Page() {
 
   return (
     <main>
-      <Navbar />
-
       <article className="min-h-screen p-5 md:grid md:place-items-center bg-extra-light-green">
         <form
           className="flex flex-col space-y-4 rounded-md p-8 w-full md:w-[28rem] h-fit bg-white"
