@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { firebaseDB } from "@/config/FirebaseConfig";
 import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, setDoc } from "firebase/firestore";
 import { Product } from "@/interfaces/Product";
+import { toast } from "react-toastify";
 
 
-export function useGetWishListProduct(userId: string) {
+export function useGetWishListProduct(accountId: string) {
     const [wishList, setWishList] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${userId}/wishlist`), (snapshot) => {
+        const unsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${accountId}/wishlist`), (snapshot) => {
             const newWishList = snapshot.docs.map((doc) => (
                 Product.fromFirestore(doc.id, doc.data())
             ));
