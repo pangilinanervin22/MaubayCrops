@@ -11,7 +11,6 @@ export default function Page() {
   const { wishList } = useGetWishListProduct(accountId || "0");
   console.log(wishList, accountId);
 
-
   const { products, isLoading } = useGetProducts();
   const [priceRange, setPriceRange] = useState("1000");
   const [categories, setCategories] = useState(new Set());
@@ -60,9 +59,8 @@ export default function Page() {
 
   return (
     <main className="min-h-screen bg-extra-light-green">
-      <Navbar />
       <section className="flex">
-        <aside className="bg-medium-green w-80 p-6 m-5 sticky top-0 rounded-md h-fit">
+        <aside className="bg-medium-green hidden md:block w-80 p-6 m-5 sticky top-0 rounded-md h-fit">
           <section className="flex justify-between">
             <h1>Filters</h1>
 
@@ -181,9 +179,11 @@ export default function Page() {
             </ul>
           </section>
         </aside>
-        <section className="w-full grid grid-cols-3 gap-4 mt-5 mr-5 mb-5">
+        <section className="w-full p-2 grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {products.map((product) => {
-            const isWishList = wishList.some((wish) => wish._id === product._id);
+            const isWishList = wishList.some(
+              (wish) => wish._id === product._id
+            );
 
             return (
               <ProductCard
