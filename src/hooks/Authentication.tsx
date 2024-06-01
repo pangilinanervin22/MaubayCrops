@@ -1,5 +1,5 @@
 import firebaseApp, { firebaseDB } from '@/config/FirebaseConfig';
-import Account, { Cart, Wishlist } from '@/interfaces/Account';
+import Account, { CartItem, Wishlist } from '@/interfaces/Account';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -103,8 +103,6 @@ export function useRegisterAccount() {
                 userType: account.userType,
                 address: [],
             });
-            await addDoc(collection(firebaseDB, `/accounts/${user.id}/wishlist`), {});
-            await addDoc(collection(firebaseDB, `/accounts/${user.id}/cart`), {});
 
             setIsRegistered(true);
             return { success: true, message: "Successfully registered" };
