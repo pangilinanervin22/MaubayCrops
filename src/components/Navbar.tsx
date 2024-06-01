@@ -13,12 +13,14 @@ import { useRouter } from "next/navigation";
 import { Brand } from "./Brand";
 import { Sidebar } from "./Sidebar";
 import { useAuthenticated } from "@/hooks/Authentication";
+import { useGetWishListProduct } from "@/hooks/WishList";
 
-interface NavbarProps { }
+interface NavbarProps {}
 
-const Navbar: React.FC<NavbarProps> = ({ }) => {
-  const { auth, isAuthenticated, logout } = useAuthenticated();
+const Navbar: React.FC<NavbarProps> = ({}) => {
+  const { auth, isAuthenticated, accountId, logout } = useAuthenticated();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const { wishList } = useGetWishListProduct(accountId || "0");
   const router = useRouter();
 
   const toggleSidebar = () => {
@@ -62,17 +64,27 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
               Login
             </button>
           )}
-          <IconHeart onClick={() => router.push("/wishlist")} />
-          <IconShoppingCart />
-          <IconUserCircle />
+          <div className="relative cursor-pointer">
+            <IconHeart
+              className="h-10 w-10 cursor"
+              onClick={() => router.push("/wishlist")}
+            />
+            <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
+              {wishList.length}
+            </span>
+          </div>
+          <div className="relative cursor-pointer">
+            <IconShoppingCart className="h-10 w-10" />
+            <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
+              10
+            </span>
+          </div>
+          <IconUserCircle className="h-10 w-10" />
         </section>
       </nav>
       <Sidebar isVisible={isSidebarVisible} sidebarToggler={toggleSidebar} />
     </div>
   );
 };
-
-
-
 
 export { Navbar };

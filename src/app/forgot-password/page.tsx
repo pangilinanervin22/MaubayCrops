@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Navbar } from "../../components/Navbar";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -17,8 +16,6 @@ export default function Page() {
 
   return (
     <main className="min-h-screen bg-extra-light-green">
-      <Navbar />
-
       <article className="p-5 md:grid md:place-items-center">
         <form
           className="flex flex-col space-y-4 rounded-md p-8 w-full md:w-[28rem] h-fit bg-white"

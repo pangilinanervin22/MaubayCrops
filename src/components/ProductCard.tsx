@@ -12,9 +12,13 @@ interface ProductCardProps {
   isWishList: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ key, product, accountId, isWishList }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  key,
+  product,
+  accountId,
+  isWishList,
+}) => {
   const { addWishList } = useAddWishList(accountId || "");
-  console.log(product);
 
   return (
     <section
@@ -24,20 +28,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ key, product, accountId, isWi
       <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
         Best Seller
       </span>
-      {/* HEART BUTTON */}
-      <button className="absolute h-12 w-12 top-0 right-0 grid place-content-center">
-        <IconHeart className="" color="red" />
+      <button
+        className="absolute h-12 w-12 top-0 right-0 grid place-content-center"
+        onClick={() => {
+          addWishList(product);
+        }}
+      >
+        <IconHeart color="red" fill={isWishList ? "red" : "transparent"} />
       </button>
       <img
         className="rounded-t-md h-60 w-full object-cover"
         src={product.imgUrl}
-        alt=""
-        onClick={() => {
-          addWishList(product);
-        }}
+        alt="product image"
       />
-      <h1>{isWishList ? "true" : "false"}</h1>
-
       <section className="flex flex-col space-y-2 p-2">
         <span className="line-clamp-3 ">{product.title}</span>
         <div className="flex space-x-2 rounded-sm bg-dark-green text-white w-fit p-2">
