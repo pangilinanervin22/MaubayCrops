@@ -10,14 +10,15 @@ export function useGetWishListProduct(accountId: string) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${accountId}/wishlist`), (snapshot) => {
-            const newWishList = snapshot.docs.map((doc) => (
-                Product.fromFirestore(doc.id, doc.data())
-            ));
+        const unsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${accountId}/wishlist`),
+            async (snapshot) => {
+                const newWishList = snapshot.docs.map((doc) => (
+                    Product.fromFirestore(doc.id, doc.data())
+                ));
 
-            setWishList(newWishList);
-            setIsLoading(false);
-        });
+                setWishList(newWishList);
+                setIsLoading(false);
+            });
 
         // Clean up the subscription on unmount
         return () => unsubscribe();
