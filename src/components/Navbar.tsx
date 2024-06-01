@@ -16,9 +16,9 @@ import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useGetCartList } from "@/hooks/Cart";
 
-interface NavbarProps { }
+interface NavbarProps {}
 
-const Navbar: React.FC<NavbarProps> = ({ }) => {
+const Navbar: React.FC<NavbarProps> = ({}) => {
   const { auth, isAuthenticated, accountId, logout } = useAuthenticated();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const { wishList } = useGetWishListProduct(accountId || "0");
@@ -76,7 +76,12 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
             </span>
           </div>
           <div className="relative cursor-pointer">
-            <IconShoppingCart className="h-10 w-10" />
+            <IconShoppingCart
+              className="h-10 w-10"
+              onClick={() => {
+                router.push("/cart");
+              }}
+            />
             <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
               {cartList.length}
             </span>
