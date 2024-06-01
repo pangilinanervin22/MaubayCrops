@@ -22,8 +22,13 @@ export default function Page() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (firstName.trim().length === 0 || lastName.trim().length === 0 ||
-      email.trim().length === 0 || password.trim().length === 0 || repeatPassword.trim().length === 0) {
+    if (
+      firstName.trim().length === 0 ||
+      lastName.trim().length === 0 ||
+      email.trim().length === 0 ||
+      password.trim().length === 0 ||
+      repeatPassword.trim().length === 0
+    ) {
       toast.error("Fields cannot be empty");
       return;
     }
@@ -57,7 +62,6 @@ export default function Page() {
       } else {
         toast.error(res.message);
       }
-
     } catch (error) {
       toast.error("Error registering user");
     }
@@ -89,13 +93,12 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (isAuthenticated)
-      router.push("/");
+    if (isAuthenticated) router.push("/");
   }, [isAuthenticated]);
 
   return (
     <main>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <article className="min-h-screen p-5 md:grid md:place-items-center bg-extra-light-green">
         <form
@@ -155,7 +158,6 @@ export default function Page() {
           >
             <option value="Farmer">Farmer</option>
             <option value="Seller">Seller</option>
-            <option value="Admin">Admin</option>
           </select>
           <label htmlFor="password">
             Password <span className="text-red-700">*</span>
