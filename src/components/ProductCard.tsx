@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         alt="product image"
       />
       <section className="flex flex-col space-y-2 p-2">
-        <span className="line-clamp-3 ">{product.title}</span>
+        <span className="line-clamp-2">{product.title}</span>
         <div className="flex space-x-2 rounded-sm bg-dark-green text-white w-fit p-2">
           <span>{`${product.rating}`}</span>
           <IconStar fill="white" />
@@ -55,22 +55,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <h6>₱{product.price}</h6>
 
         {isCart ? (
-          <button className="mt-auto btn-red flex justify-center w-full">
+          <button
+            className="mt-auto flex justify-center w-full font-bold text-primary bg-white p-3 rounded-md transition-colors duration-200 hover:bg-extra-light-green"
+            onClick={() => {
+              addToCart(product);
+            }}
+          >
             <span>
               <IconShoppingCart />
             </span>
-            <span onClick={() => {
-              addToCart(product);
-            }}>Remove from Cart</span>
+            <span>Remove from Cart</span>
           </button>
         ) : (
-          <button className="mt-auto btn-green flex justify-center w-full">
+          <button
+            className="mt-auto btn-green flex justify-center w-full"
+            onClick={() => {
+              addToCart(product);
+            }}
+          >
             <span>
               <IconShoppingCart />
             </span>
-            <span onClick={() => {
-              addToCart(product);
-            }}>Add to Cart</span>
+            <span>Add to Cart</span>
           </button>
         )}
       </section>
