@@ -45,8 +45,6 @@ export default function Page() {
 
       if (res.success === true) toast.success(res.message);
       else toast.error(res.message);
-
-      // TODO: men need pa dito mag query add to `users` collection para malagyan yun, sa auth lang kasi mapupunta pag hindi nag add to users collection
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong. Please try again.");
