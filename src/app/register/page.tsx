@@ -54,7 +54,7 @@ export default function Page() {
         email,
         password,
         name: `${firstName} ${lastName}`,
-        userType: userType as "Farmer" | "Seller" | "Admin", // Update the type of userType
+        userType: userType as "Farmer" | "Seller", // Update the type of userType
         address: [],
       };
 
