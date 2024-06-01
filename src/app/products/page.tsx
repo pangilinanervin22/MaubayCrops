@@ -1,12 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import { IconHeart, IconShoppingCart, IconStar } from "@tabler/icons-react";
-
-import { useGetProducts } from "./useProduct";
-import { Navbar } from "../components/Navbar";
-import { ProductCard } from "../components/ProductCard";
+import { Navbar } from "../../components/Navbar";
+import { ProductCard } from "../../components/ProductCard";
+import { useGetProducts } from "@/hooks/Products";
+import { useAuthenticated } from "@/hooks/Authentication";
+import { useGetWishListProduct } from "@/hooks/WishList";
 
 export default function Page() {
+  const { accountId } = useAuthenticated();
+  const { wishList } = useGetWishListProduct(accountId || "0");
+  console.log(wishList, accountId);
+
+
   const { products, isLoading } = useGetProducts();
   const [priceRange, setPriceRange] = useState("1000");
   const [categories, setCategories] = useState(new Set());
@@ -177,7 +182,18 @@ export default function Page() {
           </section>
         </aside>
         <section className="w-full grid grid-cols-3 gap-4 mt-5 mr-5 mb-5">
-          {products.map((product) => ProductCard({ key:product._id, product }))}
+          {products.map((product) => {
+            const isWishList = wishList.some((wish) => wish._id === product._id);
+
+            return (
+              <ProductCard
+                key={product._id}
+                product={product}
+                accountId={accountId}
+                isWishList={isWishList}
+              />
+            );
+          })}
         </section>
       </section>
     </main>
