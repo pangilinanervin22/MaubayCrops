@@ -4,12 +4,14 @@ import { IconHeart, IconStar, IconShoppingCart } from "@tabler/icons-react";
 
 import { IProduct } from "../interfaces/Product";
 import { useAddWishList } from "@/hooks/WishList";
+import { useAddToCart } from "@/hooks/Cart";
 
 interface ProductCardProps {
   key: string;
   product: IProduct;
-  accountId?: string;
+  accountId: string;
   isWishList: boolean;
+  isCart: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -17,8 +19,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product,
   accountId,
   isWishList,
+  isCart,
 }) => {
   const { addWishList } = useAddWishList(accountId || "");
+  const { addToCart } = useAddToCart(accountId || "");
 
   return (
     <section
@@ -50,12 +54,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <h6>₱{product.price}</h6>
 
-        <button className="mt-auto btn-green flex justify-center w-full">
-          <span>
-            <IconShoppingCart />
-          </span>
-          <span>Add to Cart</span>
-        </button>
+        {isCart ? (
+          <button className="mt-auto btn-red flex justify-center w-full">
+            <span>
+              <IconShoppingCart />
+            </span>
+            <span onClick={() => {
+              addToCart(product);
+            }}>Remove from Cart</span>
+          </button>
+        ) : (
+          <button className="mt-auto btn-green flex justify-center w-full">
+            <span>
+              <IconShoppingCart />
+            </span>
+            <span onClick={() => {
+              addToCart(product);
+            }}>Add to Cart</span>
+          </button>
+        )}
       </section>
     </section>
   );

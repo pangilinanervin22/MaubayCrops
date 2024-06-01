@@ -5,11 +5,12 @@ import { ProductCard } from "../../components/ProductCard";
 import { useGetProducts } from "@/hooks/Products";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
+import { useAddToCart, useGetCartList } from "@/hooks/Cart";
 
 export default function Page() {
   const { accountId } = useAuthenticated();
   const { wishList } = useGetWishListProduct(accountId || "0");
-  console.log(wishList, accountId);
+  const { cartList } = useGetCartList(accountId || "0");
 
   const { products, isLoading } = useGetProducts();
   const [priceRange, setPriceRange] = useState("1000");
@@ -185,12 +186,17 @@ export default function Page() {
               (wish) => wish._id === product._id
             );
 
+            const isCartList = cartList.some(
+              (cart) => cart.productId === product._id
+            );
+
             return (
               <ProductCard
                 key={product._id}
                 product={product}
                 accountId={accountId}
                 isWishList={isWishList}
+                isCart={isCartList}
               />
             );
           })}

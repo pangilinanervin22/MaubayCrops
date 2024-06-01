@@ -14,13 +14,15 @@ import { Brand } from "./Brand";
 import { Sidebar } from "./Sidebar";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
+import { useGetCartList } from "@/hooks/Cart";
 
-interface NavbarProps {}
+interface NavbarProps { }
 
-const Navbar: React.FC<NavbarProps> = ({}) => {
+const Navbar: React.FC<NavbarProps> = ({ }) => {
   const { auth, isAuthenticated, accountId, logout } = useAuthenticated();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const { wishList } = useGetWishListProduct(accountId || "0");
+  const { cartList } = useGetCartList(accountId || "0");
   const router = useRouter();
 
   const toggleSidebar = () => {
@@ -76,7 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
           <div className="relative cursor-pointer">
             <IconShoppingCart className="h-10 w-10" />
             <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
-              10
+              {cartList.length}
             </span>
           </div>
           <IconUserCircle className="h-10 w-10" />
