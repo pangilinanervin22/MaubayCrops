@@ -4,44 +4,54 @@ import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, setDoc } from 
 import { Product } from "@/interfaces/Product";
 import { CartItem } from "@/interfaces/Account";
 import { toast } from "react-toastify";
+import { log } from "console";
 
-export function useGetCartItems(accountId: string) {
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+export function useGetCartList(accountId: string) {
+    const [cartList, setCartList] = useState<CartItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${accountId}/cart`), async (snapshot) => {
-            const newCartItems: CartItem[] = [];
+        const unsubscribes: (() => void)[] = [];
 
-            for (let currentDoc of snapshot.docs) {
+        const cartUnsubscribe = onSnapshot(collection(firebaseDB, `/accounts/${accountId}/cart`), async (snapshot) => {
+            const cartDocs = snapshot.docs;
+
+            const newCartItems = await Promise.all(cartDocs.map(async (currentDoc) => {
                 const productId = currentDoc.id;
-                const userRef = doc(firebaseDB, `/products/${productId}`);
-                const docSnap = await getDoc(userRef);
+                const productRef = doc(firebaseDB, `/products/${productId}`);
+                const productSnapshot = await getDoc(productRef);
 
-                if (docSnap.exists()) {
-                    newCartItems.push({
-                        productId: productId,
+                if (productSnapshot.exists()) {
+                    return {
+                        ...productSnapshot.data(),
                         quantity: currentDoc.data().quantity,
-                        ...docSnap.data()
-                    } as CartItem);
+                        productId: productId,
+                        _id: productId
+                    } as CartItem;
                 }
-            }
 
-            setCartItems(newCartItems);
+                return null;
+            }));
+
+            setCartList(newCartItems.filter(item => item !== null) as CartItem[]);
             setIsLoading(false);
         });
 
-        // Clean up the subscription on unmount
-        return () => unsubscribe();
-    }, [accountId]); // Depend on userId so it reruns the effect when userId changes
+        unsubscribes.push(cartUnsubscribe);
 
-    return { cartItems, isLoading };
+        // Clean up the subscriptions on unmount
+        return () => {
+            unsubscribes.forEach(unsubscribe => unsubscribe());
+        };
+    }, [accountId]);
+
+    return { cartList, isLoading };
 }
+
 
 export function useAddToCart(accountId: string) {
     const addToCart = async (product: Product) => {
         try {
-
             if (!accountId) {
                 toast.error("User not login");
                 return { ok: false, message: "User does not exist" };
@@ -67,7 +77,7 @@ export function useAddToCart(accountId: string) {
             }
 
             const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${product._id}`);
-            await setDoc(docRef, { ...product });
+            await setDoc(docRef, { quantity: 1, productId: product._id });
             toast.success("Product added to cart");
             return { ok: true, message: "Product added to cart" };
         } catch (e) {
