@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "../../components/Navbar";
 import { useAuthenticated, useRegisterAccount } from "@/hooks/Authentication";
 import Account from "@/interfaces/Account";
+import { IconEye, IconEyeClosed } from "@tabler/icons-react";
+import { ShowPassword } from "@/components/ShowPassword";
 
 export default function Page() {
   const { registerAccount } = useRegisterAccount();
@@ -18,6 +20,7 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [willAcceptTerms, setWillAcceptTerms] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,6 +95,10 @@ export default function Page() {
     }
   };
 
+  const handlePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   useEffect(() => {
     if (isAuthenticated) router.push("/");
   }, [isAuthenticated]);
@@ -162,27 +169,39 @@ export default function Page() {
           <label htmlFor="password">
             Password <span className="text-red-700">*</span>
           </label>
-          <input
-            className="border-2 border-gray-300 rounded-md p-2"
-            type="password"
-            id="password"
-            name="password"
-            required
-            value={password}
-            onChange={handleFormChange}
-          />
+          <div className="flex justify-between relative">
+            <input
+              className="w-full border-2 border-gray-300 rounded-md p-2"
+              type={isPasswordVisible ? "text" : "password"}
+              id="password"
+              name="password"
+              required
+              value={password}
+              onChange={handleFormChange}
+            />
+            <ShowPassword
+              handlePasswordVisibility={handlePasswordVisibility}
+              isPasswordVisible={isPasswordVisible}
+            />
+          </div>
           <label htmlFor="repeatPassword">
             Repeat Password <span className="text-red-700">*</span>
           </label>
-          <input
-            className="border-2 border-gray-300 rounded-md p-2"
-            type="password"
-            id="repeatPassword"
-            name="repeatPassword"
-            required
-            value={repeatPassword}
-            onChange={handleFormChange}
-          />
+          <div className="flex justify-between relative">
+            <input
+              className="w-full border-2 border-gray-300 rounded-md p-2"
+              type={isPasswordVisible ? "text" : "password"}
+              id="repeatPassword"
+              name="repeatPassword"
+              required
+              value={repeatPassword}
+              onChange={handleFormChange}
+            />
+            <ShowPassword
+              handlePasswordVisibility={handlePasswordVisibility}
+              isPasswordVisible={isPasswordVisible}
+            />
+          </div>
 
           <div className="flex gap-1">
             <input

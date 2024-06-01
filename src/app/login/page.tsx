@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuthenticated, useLogin } from "@/hooks/Authentication";
+import { ShowPassword } from "@/components/ShowPassword";
 
 export default function Page() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
@@ -78,15 +80,23 @@ export default function Page() {
           <label htmlFor="password">
             Password <span className="text-red-700">*</span>
           </label>
-          <input
-            className="border-2 border-gray-300 rounded-md p-2"
-            type="password"
-            id="password"
-            name="password"
-            required
-            value={password}
-            onChange={handleFormChange}
-          />
+          <div className="flex justify-between relative">
+            <input
+              className="w-full border-2 border-gray-300 rounded-md p-2"
+              type={isPasswordVisible ? "text" : "password"}
+              id="password"
+              name="password"
+              required
+              value={password}
+              onChange={handleFormChange}
+            />
+            <ShowPassword
+              handlePasswordVisibility={() => {
+                setIsPasswordVisible(!isPasswordVisible);
+              }}
+              isPasswordVisible={isPasswordVisible}
+            />
+          </div>
 
           <h2
             className="underline font-bold text-primary cursor-pointer"
