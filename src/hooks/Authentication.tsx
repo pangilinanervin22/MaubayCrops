@@ -1,5 +1,5 @@
 import firebaseApp, { firebaseDB } from '@/config/FirebaseConfig';
-import Account, { CartItem, Wishlist } from '@/interfaces/Account';
+import Account, { CartItem } from '@/interfaces/Account';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
