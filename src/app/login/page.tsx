@@ -1,21 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { firebaseAuth } from "@/config/FirebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import useAuthenticated from "@/hooks/useAuthenticated";
+import { useAuthenticated, useLogin } from "@/hooks/Authentication";
 
-import { Navbar } from "../components/Navbar";
-
-interface LoginProps {
-  // Add any props you need for the login component
-}
+import { Navbar } from "../../components/Navbar";
 
 export default function Page() {
   const router = useRouter();
   const { auth, isAuthenticated } = useAuthenticated();
+  const { login } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,23 +41,23 @@ export default function Page() {
         return;
       }
 
-      if (isAuthenticated) {
-        toast.error("User already logged in this session will be logged out!");
-        auth.signOut();
-      }
-      const res = await signInWithEmailAndPassword(
-        firebaseAuth,
-        email,
-        password
-      );
+      const res = await login(email, password);
+
+      if (res.success === true)
+        toast.success(res.message);
+      else
+        toast.error(res.message);
 
       // TODO: men need pa dito mag query add to `users` collection para malagyan yun, sa auth lang kasi mapupunta pag hindi nag add to users collection
-      alert("User logged in successfully!");
     } catch (error) {
-      alert("Error logging in:");
-      toast.error("Error logging in");
+      console.log(error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
+
+  if (isAuthenticated) {
+    router.push("/");
+  }
 
   return (
     <main>

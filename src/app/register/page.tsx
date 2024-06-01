@@ -1,13 +1,15 @@
 "use client";
-import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { firebaseAuth } from "@/config/FirebaseConfig";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import useAuthenticated from "@/hooks/useAuthenticated";
 import { useRouter } from "next/navigation";
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../../components/Navbar";
+import { useAuthenticated, useRegisterAccount } from "@/hooks/Authentication";
+import Account from "@/interfaces/Account";
 
 export default function Page() {
+  const { registerAccount } = useRegisterAccount();
+  const { isAuthenticated } = useAuthenticated();
+
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -17,40 +19,48 @@ export default function Page() {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [willAcceptTerms, setWillAcceptTerms] = useState(false);
 
-  const handleRegister = async () => {
-    try {
-      await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      console.log("User registered successfully!");
-    } catch (error) {
-      console.error("Error registering user:", error);
-      toast.error("Error registering user");
-    }
-  };
-
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (firstName.trim().length === 0 || lastName.trim().length === 0) {
+    if (firstName.trim().length === 0 || lastName.trim().length === 0 ||
+      email.trim().length === 0 || password.trim().length === 0 || repeatPassword.trim().length === 0) {
       toast.error("Fields cannot be empty");
       return;
     }
 
-    if (password !== repeatPassword) {
+    // check if email is valid
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email address");
+      return;
+    } else if (password !== repeatPassword) {
       toast.error("Passwords do not match");
+      return;
+    } else if (!willAcceptTerms) {
+      toast.error("Please accept terms and conditions");
       return;
     }
 
-    // call handle register or move the logic here
+    try {
+      const account: Account = {
+        email,
+        password,
+        name: `${firstName} ${lastName}`,
+        userType: userType as "Farmer" | "Seller" | "Admin", // Update the type of userType
+        address: [],
+      };
 
-    console.log({
-      firstName,
-      lastName,
-      email,
-      userType,
-      password,
-      repeatPassword,
-      willAcceptTerms,
-    });
+      const res = await registerAccount(account);
+      if (res.success) {
+        toast.success(res.message);
+        router.push("/login");
+      } else {
+        toast.error(res.message);
+      }
+
+    } catch (error) {
+      toast.error("Error registering user");
+    }
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +87,11 @@ export default function Page() {
         break;
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated)
+      router.push("/");
+  }, [isAuthenticated]);
 
   return (
     <main>
@@ -140,6 +155,7 @@ export default function Page() {
           >
             <option value="Farmer">Farmer</option>
             <option value="Seller">Seller</option>
+            <option value="Admin">Admin</option>
           </select>
           <label htmlFor="password">
             Password <span className="text-red-700">*</span>
