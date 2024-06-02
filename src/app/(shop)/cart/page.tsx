@@ -7,6 +7,7 @@ import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 import { Address } from "@/interfaces/Account";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 interface AddressModalProps {
   addresses: Address[];
@@ -261,18 +262,10 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
         >
           Save Address
         </button>
-        <button
-          className="btn-light py-2 px-4"
-          type="button"
-          onClick={onBack}
-        >
+        <button className="btn-light py-2 px-4" type="button" onClick={onBack}>
           Back
         </button>
-        <button
-          className="btn-light py-2 px-4"
-          type="button"
-          onClick={onClose}
-        >
+        <button className="btn-light py-2 px-4" type="button" onClick={onClose}>
           Close
         </button>
       </form>
@@ -282,8 +275,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 
 export default function Page() {
   const router = useRouter();
-  const { isAuthenticated, isLoading, accountId } = useAuthenticated();
-  const { cartList } = useGetCartList(accountId || "0");
+  const {
+    isAuthenticated,
+    isLoading: isAuthLoading,
+    accountId,
+  } = useAuthenticated();
+  const { cartList, isLoading: isCartLoading } = useGetCartList(
+    accountId || "0"
+  );
   const totalPrice = cartList.reduce((total, item) => {
     return total + item.price * (item.cartItemQuantity || 1);
   }, 0);
@@ -337,8 +336,12 @@ export default function Page() {
     setShowAddressModal(true);
   };
 
-  if (!isAuthenticated && !isLoading) {
+  if (!isAuthenticated && !isAuthLoading) {
     router.push("/login");
+  }
+
+  if (isAuthLoading || isCartLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
@@ -355,30 +358,32 @@ export default function Page() {
               quantity={cartItem.cartItemQuantity || 1}
             />
           ))}
-          <section className="bg-white p-4 shadow-md w-full mt-4">
-            <h4 className="text-lg font-semibold mb-2">Price Details</h4>
-            <div className="flex justify-between mb-2">
-              <span>Price ({cartList.length} Items)</span>
-              <span>₱{totalPrice}</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span>Delivery Charge</span>
-              <span>₱{deliveryCharge}</span>
-            </div>
-            <div className="flex justify-between mb-4 text-xl font-bold text-green-600">
-              <span>Total Amount</span>
-              <span>₱{finalTotal}</span>
-            </div>
-            <div className="text-center text-purple-600 mb-4">
-              FREE Home Delivery on orders above ₱1000
-            </div>
-            <button
-              className="btn-green text-white py-2 px-4 rounded w-full"
-              onClick={() => setShowAddressModal(true)}
-            >
-              PROCEED TO CHECKOUT
-            </button>
-          </section>
+          {cartList.length > 0 ? (
+            <section className="bg-white p-4 shadow-md w-full mt-4">
+              <h4 className="text-lg font-semibold mb-2">Price Details</h4>
+              <div className="flex justify-between mb-2">
+                <span>Price ({cartList.length} Items)</span>
+                <span>₱{totalPrice}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span>Delivery Charge</span>
+                <span>₱{deliveryCharge}</span>
+              </div>
+              <div className="flex justify-between mb-4 text-xl font-bold text-green-600">
+                <span>Total Amount</span>
+                <span>₱{finalTotal}</span>
+              </div>
+              <div className="text-center text-purple-600 mb-4">
+                FREE Home Delivery on orders above ₱1000
+              </div>
+              <button
+                className="btn-green text-white py-2 px-4 rounded w-full"
+                onClick={() => setShowAddressModal(true)}
+              >
+                PROCEED TO CHECKOUT
+              </button>
+            </section>
+          ) : null}
         </section>
       </article>
 
