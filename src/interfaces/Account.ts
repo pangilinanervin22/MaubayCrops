@@ -12,12 +12,12 @@ export default interface Account {
 
 export interface Address {
     _id?: string;
-    nameReceiver: string;
+    receiverName: string;
+    phone: string;
     province: string;
     city: string;
     barangay: string;
-    building: string;
-    phone: string;
+    landmark: string;
 }
 
 export interface CartItem extends Product {
