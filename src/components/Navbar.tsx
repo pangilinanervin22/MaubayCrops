@@ -16,10 +16,10 @@ import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useGetCartList } from "@/hooks/Cart";
 
-interface NavbarProps {}
+interface NavbarProps { }
 
-const Navbar: React.FC<NavbarProps> = ({}) => {
-  const { auth, isAuthenticated, accountId, logout } = useAuthenticated();
+const Navbar: React.FC<NavbarProps> = ({ }) => {
+  const { isAuthenticated, accountId, logout } = useAuthenticated();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const { wishList } = useGetWishListProduct(accountId || "0");
   const { cartList } = useGetCartList(accountId || "0");
@@ -28,11 +28,6 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
-
-  useEffect(() => {
-    console.log("isAuthenticated: ", isAuthenticated);
-    console.log("auth: ", auth.currentUser?.uid);
-  }, [isAuthenticated]);
 
   return (
     <div>
