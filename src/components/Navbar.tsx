@@ -70,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
             className="relative cursor-pointer"
             onClick={() => router.push("/wishlist")}
           >
-            <IconHeart className="h-10 w-10 cursor" />
+            <IconHeart className="h-10 w-10" />
             <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
               {wishList.length}
             </span>
