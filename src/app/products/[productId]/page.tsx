@@ -1,7 +1,6 @@
 "use client";
 
 import { IconHeart, IconShoppingCart } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useAuthenticated } from "@/hooks/Authentication";
@@ -16,7 +15,6 @@ export default function Page({ params }: { params: { productId: string } }) {
   const { wishList } = useGetWishListProduct(accountId || "0");
   const { cartList } = useGetCartList(accountId || "0");
   const { addToCart } = useAddToCart(accountId || "0");
-  const router = useRouter();
 
   if (isLoading) {
     // loading.tsx does not work idk
