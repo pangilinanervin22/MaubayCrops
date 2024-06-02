@@ -1,11 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Navbar } from "../../components/Navbar";
-import { ProductCard } from "../../components/ProductCard";
 import { useGetProducts } from "@/hooks/Products";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useAddToCart, useGetCartList } from "@/hooks/Cart";
+import { ProductCard } from "@/components/ProductCard";
 
 export default function Page() {
   const { accountId } = useAuthenticated();

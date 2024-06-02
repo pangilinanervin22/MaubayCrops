@@ -2,7 +2,6 @@
 import React from "react";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useRouter } from "next/navigation";
-
 import { ProductCard } from "@/components/ProductCard";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useGetCartList } from "@/hooks/Cart";

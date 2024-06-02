@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { Navbar } from "../../components/Navbar";
 import { useAuthenticated, useRegisterAccount } from "@/hooks/Authentication";
 import Account from "@/interfaces/Account";
 import { IconEye, IconEyeClosed } from "@tabler/icons-react";
