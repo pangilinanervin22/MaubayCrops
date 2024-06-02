@@ -32,7 +32,7 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
         }}
       />
       <section className="flex flex-col">
-        <h2 className="text-lg font-semibold text-center md:text-left mb-2">
+        <h2 className="text-lg font-semibold text-left mb-2">
           {product.title}
         </h2>
         <section className="flex items-center mb-2">
