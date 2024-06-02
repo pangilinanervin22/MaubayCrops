@@ -64,23 +64,24 @@ export default function MainTable({
 
 
     //sorting by search query filter
-    sortedData = useMemo(
-        () => (searchQuery ? sortedData.filter((item: any) => item[structure.searchPath].toLowerCase().includes(searchQuery.toLowerCase())) : sortedData),
-        [searchQuery, sortedData, structure.searchPath]
+    const filteredData = useMemo(
+        () => searchQuery ? sortedData.filter((item: any) => item[structure.searchPath].toLowerCase().includes(searchQuery.toLowerCase())) : sortedData,
+        [searchQuery, structure.searchPath, sortedData]
     );
 
     //get total data filtered by search
     const sizeData = sortedData.length;
 
     //sorting by path
-    sortedData = useMemo(
-        () => (sortPath(sortedData, sortColumn.path, sortColumn.order)),
-        [sortColumn, sortedData]);
+    const sortedFilteredData = useMemo(
+        () => sortPath(filteredData, sortColumn.path, sortColumn.order),
+        [sortColumn.path, sortColumn.order, filteredData]
+    );
 
     //pagination data
-    sortedData = useMemo(
-        () => paginate(sortedData, page.current, page.size),
-        [page, sortedData]
+    const paginatedData = useMemo(
+        () => paginate(sortedFilteredData, page.current, page.size),
+        [page.current, page.size, sortedFilteredData]
     );
 
     return (
@@ -92,17 +93,20 @@ export default function MainTable({
                 isHaveAdd={Boolean(handleAdd)}
                 handleAdd={handleAdd || (() => { })}
             />
-
-            <BodyTable
-                isEditable={isEditable}
-                data={sortedData}
-                tableProps={structure}
-                sortColumn={sortColumn}
-                handleSortColumn={onHandleSortColumn}
-                deleteColumn={onDelete}
-                updateColumn={handleUpdate}
-            />
-            <PaginateTable page={page.current} size={page.size} currentTotal={sortedData.length} total={sizeData} handlePagination={onHandlePagination} />
+            {paginatedData.length > 0 ? (
+                <BodyTable
+                    isEditable={isEditable}
+                    data={paginatedData}
+                    tableProps={structure}
+                    sortColumn={sortColumn}
+                    handleSortColumn={onHandleSortColumn}
+                    deleteColumn={onDelete}
+                    updateColumn={handleUpdate}
+                />
+            ) : (
+                <div>No data available</div>
+            )}
+            <PaginateTable page={page.current} size={page.size} currentTotal={paginatedData.length} total={sizeData} handlePagination={onHandlePagination} />
         </div>
     );
 
