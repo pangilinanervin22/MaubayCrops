@@ -1,3 +1,4 @@
+import { Navbar } from "@/components/Navbar";
 import type { Metadata } from "next";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,5 +12,10 @@ export default function ShopLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 }
