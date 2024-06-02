@@ -59,7 +59,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {isCart ? (
           <button
-            className="mt-auto flex justify-center w-full font-bold text-primary bg-white p-3 rounded-md transition-colors duration-200 hover:bg-extra-light-green"
+            className="btn-light mt-auto flex justify-center w-full font-bold"
             onClick={() => {
               addToCart(product);
             }}
@@ -71,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         ) : (
           <button
-            className="mt-auto btn-green flex justify-center w-full"
+            className="mt-auto btn-green flex justify-center w-full py-2"
             onClick={() => {
               addToCart(product);
             }}
