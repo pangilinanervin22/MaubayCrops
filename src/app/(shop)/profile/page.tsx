@@ -2,9 +2,71 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { Address } from "@/interfaces/Account";
+import { AddAddressModal } from "@/components/AddAddressModal";
+import { IconPencil } from "@tabler/icons-react";
 
 export default function Page() {
   const router = useRouter();
+  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
+  const dummyData: Address[] = [
+    {
+      _id: "1",
+      receiverName: "John Doe",
+      phone: "09171234567",
+      province: "Laguna",
+      city: "San Pedro",
+      barangay: "Barangay San Antonio",
+      landmark: "Near San Antonio Church",
+    },
+    {
+      _id: "2",
+      receiverName: "Jane Smith",
+      phone: "09181234567",
+      province: "Cebu",
+      city: "Cebu City",
+      barangay: "Barangay Lahug",
+      landmark: "Near IT Park",
+    },
+    {
+      _id: "3",
+      receiverName: "Carlos Garcia",
+      phone: "09192234567",
+      province: "Davao del Sur",
+      city: "Davao City",
+      barangay: "Barangay Buhangin",
+      landmark: "Near SM Lanang",
+    },
+    {
+      _id: "4",
+      receiverName: "Maria Santos",
+      phone: "09193234567",
+      province: "Rizal",
+      city: "Antipolo",
+      barangay: "Barangay San Roque",
+      landmark: "Near Antipolo Cathedral",
+    },
+  ];
+  const [addresses, setAddresses] = useState<Address[]>(dummyData);
+  const [editAddress, setEditAddress] = useState<Address | null>(null);
+
+  const handleAddAddress = (newAddress: Address) => {
+    setAddresses([...addresses, newAddress]);
+    setShowAddAddressModal(false);
+  };
+
+  const handleSaveEditedAddress = (editedAddress: Address) => {
+    setAddresses(
+      addresses.map((address) => {
+        return address._id === editedAddress._id ? editedAddress : address;
+      })
+    );
+    setShowAddAddressModal(false);
+    setEditAddress(null);
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
       <section className="flex flex-col items-center justify-center mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
@@ -50,6 +112,70 @@ export default function Page() {
         </p>
       </section>
 
+      <section className="flex flex-col items-start mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
+        <h2 className="text-2xl font-semibold mb-4 text-green-700">
+          Addresses
+        </h2>
+
+        <ul className="list-none grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-gray-700 p-4">
+          {addresses.map((address, index) => (
+            <li
+              key={index}
+              className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm relative"
+            >
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setEditAddress(address);
+                  setShowAddAddressModal(true);
+                }}
+              >
+                <IconPencil stroke={1} fill="green" color="white" />
+              </button>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Name:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  {address.receiverName}
+                </span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Phone:
+                </strong>
+                <span className="text-sm text-gray-600">{address.phone}</span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Address:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  {address.province}, {address.city}, {address.barangay}
+                </span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Landmark:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  {address.landmark}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          onClick={() => {
+            setShowAddAddressModal(true);
+          }}
+          className="btn-green px-3 py-1 w-40 mt-2"
+        >
+          Add Address
+        </button>
+      </section>
+
       <section className="flex flex-col items-start bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
         <h2 className="text-2xl font-semibold mb-4 text-green-700">
           Pending Orders
@@ -61,6 +187,19 @@ export default function Page() {
           <li>Order #67890</li>
         </ul>
       </section>
+
+      {showAddAddressModal && (
+        <AddAddressModal
+          onClose={() => {
+            setShowAddAddressModal(false);
+          }}
+          onSave={editAddress ? handleSaveEditedAddress : handleAddAddress}
+          onBack={() => {
+            setShowAddAddressModal(false);
+          }}
+          editAddress={editAddress}
+        />
+      )}
     </main>
   );
 }
