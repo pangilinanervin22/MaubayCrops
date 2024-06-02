@@ -1,7 +1,9 @@
 import firebaseApp, { firebaseDB } from '@/config/FirebaseConfig';
 import Account, { CartItem } from '@/interfaces/Account';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { set } from 'firebase/database';
+import { addDoc, collection, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore';
+import { doc } from 'firebase/firestore/lite';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -11,6 +13,7 @@ export function useAuthenticated() {
     const [accountData, setAccountData] = useState<Account>();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // Add loading state
+    const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -21,6 +24,7 @@ export function useAuthenticated() {
 
                 setAccountId(querySnapshot.docs[0].id);
                 setAccountData(querySnapshot.docs[0].data() as Account);
+                setIsAdmin(querySnapshot.docs[0].data().userType === 'Admin');
             }
             else
                 setIsAuthenticated(false);
@@ -37,8 +41,11 @@ export function useAuthenticated() {
 
         signOut(auth)
             .then(() => {
-                toast.success('Successfully signed out');
+                setAccountId("");
+                setIsAdmin(false);
                 setIsAuthenticated(false);
+                setAccountData(undefined);
+                toast.success('Successfully signed out');
             })
             .catch((error) => {
                 toast.error('Error signing out:', error);
@@ -48,7 +55,7 @@ export function useAuthenticated() {
             });
     };
 
-    return { isAuthenticated, auth, logout, accountData, accountId, isLoading };
+    return { isAuthenticated, auth, logout, accountData, accountId, isLoading, isAdmin };
 }
 
 export function useLogin() {
@@ -116,6 +123,47 @@ export function useRegisterAccount() {
     };
 
     return { isRegistered, registerAccount, isLoading };
+}
+
+export function useUpdateAccountAddress(accountId: string) {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const updateAccountAddress = async (address: Account["address"]) => {
+        try {
+            setIsLoading(true);
+
+            await setDoc(doc(firebaseDB, `accounts/${accountId}`), { address }, { merge: true });
+            toast.success("Address updated successfully");
+            return { success: true, message: "Address updated successfully" };
+        } catch (error) {
+            console.error(error);
+            toast.error("Error updating address");
+            return { message: "Error updating address" };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { updateAccountAddress, isLoading };
+
+
+}
+
+export function useGetAllAccounts() {
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(firebaseDB, "accounts"), (snapshot) => {
+            const data = snapshot.docs.map((doc) => doc.data() as Account);
+            setAccounts(data);
+            setIsLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    return { accounts, isLoading };
 }
 
 async function verifyEmailIsUnique(email: string) {
