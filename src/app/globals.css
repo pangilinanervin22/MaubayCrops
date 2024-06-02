@@ -7,6 +7,10 @@
     @apply bg-primary w-24 text-white font-bold p-1 rounded-md transition-colors duration-200 hover:bg-[#00704f];
   }
 
+  .btn-light {
+    @apply font-bold text-primary bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-extra-light-green;
+  }
+
   .input {
     @apply border-2 border-gray-300 rounded-md p-2;
   }
