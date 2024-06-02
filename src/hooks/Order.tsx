@@ -12,7 +12,7 @@ export function useGetOrderList(accountId: string) {
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
-            collection(firebaseDB, `/accounts/${accountId}/order`),
+            collection(firebaseDB, `/accounts/${accountId}/orders`),
             async (snapshot) => {
                 const newOrderList = snapshot.docs.map((doc) => {
                     return {
@@ -55,9 +55,9 @@ export function usePlaceOrder() {
                 const productSnap = await getDoc(productRef);
 
                 if (productSnap.exists()) {
-                    const newQuantity = productSnap.data().quantity - cartItem.data().quantity;
+                    const newQuantity = productSnap.data().quantity - cartItem.data().cartItemQuantity;
 
-                    if (newQuantity < 0 || cartItem.data().quantity > productSnap.data().quantity) {
+                    if (newQuantity < 0 || cartItem.data().cartItemQuantity > productSnap.data().quantity) {
                         toast.error("Not enough stock for product " + productSnap.data().name);
                         return { ok: false, message: "Not enough stock" };
                     }
@@ -66,8 +66,8 @@ export function usePlaceOrder() {
                     orderItemList.push({
                         ...productSnap.data() as Product,
                         _id: productSnap.id,
-                        productId: productSnap.data().productId,
-                        orderItemQuantity: cartItem.data().quantity,
+                        productId: cartItem.data().productId,
+                        orderItemQuantity: cartItem.data().cartItemQuantity,
                     });
 
                     batch.update(productRef, { quantity: newQuantity });
@@ -75,25 +75,35 @@ export function usePlaceOrder() {
                 }
             }
 
-            await batch.commit();
             let totalPrice = orderItemList.reduce((acc, product) => acc + product.price, 0);
             if (totalPrice < 1000) totalPrice = totalPrice + 100; // Add delivery fee if total price is less than 1000
 
+            const ordersCollectionRef = collection(firebaseDB, `/accounts/${accountId}/orders`);
+            const newOrderRef = doc(ordersCollectionRef);
             const order: Order = {
-                _id: "",
-                orderItems: orderItemList,
+                _id: newOrderRef.id,
+                orderItems: orderItemList.map(item => ({
+                    ...item,
+                    _id: item._id,
+                    productId: item.productId,
+                    orderItemQuantity: item.orderItemQuantity,
+                    price: item.price,
+                    // Add other fields here as necessary and ensure they are defined
+                })),
                 orderTotal: totalPrice,
                 orderStatus: "Pending",
                 orderDate: new Date(),
-                orderAddress: address,
+                orderAddress: { ...address },
             };
 
-            await addDoc(collection(firebaseDB, `/accounts/${accountId}/order`), order);
+            console.log(order);
+
+            await setDoc(newOrderRef, order);
+            await batch.commit();
             toast.success("Order placed successfully");
             return { ok: true, message: "Order placed successfully" };
         } catch (e) {
             console.log(e);
-
             toast.error("Failed to place order");
             return { ok: false, message: "Failed to place order" };
         }
@@ -102,16 +112,16 @@ export function usePlaceOrder() {
     return { placeOrder };
 }
 
-export function useCancelOrder(accountId: string) {
-    const cancelOrder = async (productId: string) => {
-        try {
-            await deleteDoc(doc(firebaseDB, `/accounts/${accountId}/order/${productId}`));
-            toast.warning("Order cancelled");
-            return { ok: true, message: "Order cancelled" };
-        } catch (e) {
-            return { ok: false, message: "Failed to cancel order" };
-        }
-    };
+// export function useCancelOrder(accountId: string) {
+//     const cancelOrder = async (productId: string) => {
+//         try {
+//             await deleteDoc(doc(firebaseDB, `/accounts/${accountId}/orders/${productId}`));
+//             toast.warning("Order cancelled");
+//             return { ok: true, message: "Order cancelled" };
+//         } catch (e) {
+//             return { ok: false, message: "Failed to cancel order" };
+//         }
+//     };
 
-    return { cancelOrder };
-}
+//     return { cancelOrder };
+// }
