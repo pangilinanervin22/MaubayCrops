@@ -26,6 +26,29 @@ export function useGetProducts() {
     return { products, isLoading };
 }
 
+export function useGetProduct(productId: string) {
+    const [product, setProduct] = useState<Product | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            doc(firebaseDB, "products", productId),
+            (doc) => {
+                if (doc.exists()) {
+                    setProduct(Product.fromFirestore(doc.id, doc.data()));
+                } else {
+                    setProduct(null);
+                }
+                setIsLoading(false); // Set loading to false after data is received
+            }
+        );
+
+        return () => unsubscribe();
+    }, [productId]);
+
+    return { product, isLoading };
+}
+
 export function useAddProduct() {
     const addProduct = async (name: string) => {
         try {
