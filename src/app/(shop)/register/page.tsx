@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useAuthenticated, useRegisterAccount } from "@/hooks/Authentication";
+
 import Account from "@/interfaces/Account";
-import { IconEye, IconEyeClosed } from "@tabler/icons-react";
+import { useAuthenticated, useRegisterAccount } from "@/hooks/Authentication";
 import { ShowPassword } from "@/components/ShowPassword";
 
 export default function Page() {
@@ -220,7 +220,7 @@ export default function Page() {
             Create New Account
           </button>
           <button
-            className="font-bold text-primary bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-extra-light-green"
+            className="btn-light"
             onClick={() => {
               router.push("/login");
             }}
