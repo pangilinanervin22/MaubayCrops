@@ -6,36 +6,13 @@ import { useRouter } from "next/navigation";
 import { useGetCartList, useUpdateCart } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 
-interface Quantity {
-  [key: string]: number;
-}
+
 export default function Page() {
   const router = useRouter();
   const { isAuthenticated, isLoading, accountId } = useAuthenticated();
   const { cartList } = useGetCartList(accountId || "0");
-  const [quantities, setQuantities] = useState<Quantity>({});
-  console.log(cartList, quantities);
-
-
-  useEffect(() => {
-    if (cartList.length > 0) {
-      const initialQuantities = cartList.reduce((acc: Quantity, item) => {
-        acc[item._id] = item.cartItemQuantity; // initial quantity is 1
-        return acc;
-      }, {});
-      setQuantities(initialQuantities);
-    }
-  }, [cartList]);
-
-  const handleQuantityChange = (id: string, newQuantity: number) => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [id]: newQuantity > 0 ? newQuantity : 1,
-    }));
-  };
-
   const totalPrice = cartList.reduce((total, item) => {
-    return total + item.price * (quantities[item._id] || 1);
+    return total + item.price * (item.cartItemQuantity || 1);
   }, 0);
 
   const deliveryCharge = totalPrice > 1000 ? 0 : 100;
@@ -44,8 +21,6 @@ export default function Page() {
   if (!isAuthenticated && !isLoading) {
     router.push("/login");
   }
-
-  console.log(quantities);
 
   return (
     <main className="min-h-screen flex flex-col bg-extra-light-green">
@@ -58,8 +33,7 @@ export default function Page() {
             <ProductCheckout
               key={cartItem._id}
               product={cartItem}
-              quantity={quantities[cartItem._id]}
-              onQuantityChange={handleQuantityChange}
+              quantity={cartItem.cartItemQuantity || 1}
             />
           ))}
           <section className="bg-white p-4 shadow-md w-full mt-4">

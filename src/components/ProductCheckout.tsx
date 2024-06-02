@@ -10,13 +10,11 @@ import { useRouter } from "next/navigation";
 interface ProductCheckoutProps {
   product: CartItem;
   quantity: number;
-  onQuantityChange: (id: string, newQuantity: number) => void;
 }
 
 const ProductCheckout: React.FC<ProductCheckoutProps> = ({
   product,
   quantity,
-  onQuantityChange,
 }) => {
   const { accountId } = useAuthenticated();
   const { addToCart } = useAddToCart(accountId || "");
@@ -60,7 +58,6 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
               if (updateCart)
                 await updateCart(accountId, product._id, inputQuantity);
 
-              onQuantityChange(product._id, inputQuantity);
             }}
             className="w-16 p-1 border"
           />
