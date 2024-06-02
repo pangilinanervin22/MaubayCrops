@@ -35,15 +35,6 @@ export function useAddWishList(accountId: string) {
                 return { ok: false, message: "User does not exist" };
             }
 
-            // check user if exists
-            // const userRef = doc(firebaseDB, `/accounts/${userId}`);
-            // const docSnap = await getDoc(userRef);
-
-            // if (!docSnap.exists()) {
-            //     toast.error("User not v");
-            //     return { ok: false, message: "User does not exist" };
-            // }
-
             // check if product already exists in wishlist
             const querySnapshot = await getDocs(collection(firebaseDB, `/accounts/${accountId}/wishlist`));
             const existingProduct = querySnapshot.docs.find((doc) => doc.id === product._id);

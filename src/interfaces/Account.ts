@@ -11,7 +11,7 @@ export default interface Account {
 }
 
 export interface Address {
-    _id?: string;
+    _id: string;
     receiverName: string;
     phone: string;
     province: string;
@@ -25,3 +25,16 @@ export interface CartItem extends Product {
     productId: string;
 }
 
+export interface Order {
+    _id?: string;
+    orderItems: OrderItem[];
+    orderTotal: number;
+    orderStatus: "Pending" | "Processing" | "Shipped" | "Delivered";
+    orderDate: Date;
+    orderAddress: Address;
+}
+
+export interface OrderItem extends Product {
+    orderItemQuantity: number;
+    productId: string;
+}

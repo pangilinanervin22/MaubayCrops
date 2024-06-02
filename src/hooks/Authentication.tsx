@@ -1,8 +1,8 @@
 import firebaseApp, { firebaseDB } from '@/config/FirebaseConfig';
-import Account, { CartItem } from '@/interfaces/Account';
+import Account, { Address } from '@/interfaces/Account';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { set } from 'firebase/database';
-import { addDoc, collection, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'; // Import the 'collection' function from 'firebase/firestore'
 import { doc } from 'firebase/firestore/lite';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -22,12 +22,22 @@ export function useAuthenticated() {
                 const q = query(collection(firebaseDB, 'accounts'), where('uid', '==', user.uid));
                 const querySnapshot = await getDocs(q);
 
-                setAccountId(querySnapshot.docs[0].id);
-                setAccountData(querySnapshot.docs[0].data() as Account);
-                setIsAdmin(querySnapshot.docs[0].data().userType === 'Admin');
+                if (querySnapshot.docs.length > 0) {
+                    setAccountId(querySnapshot.docs[0].id);
+                    setAccountData(querySnapshot.docs[0].data() as Account);
+                    setIsAdmin(querySnapshot.docs[0].data().userType === 'Admin');
+                } else {
+                    setAccountId("");
+                    setAccountData(undefined);
+                    setIsAdmin(false);
+                }
             }
-            else
+            else {
                 setIsAuthenticated(false);
+                setAccountId("");
+                setAccountData(undefined);
+                setIsAdmin(false);
+            }
 
             setIsLoading(false); // Set loading state to false
         });
@@ -103,12 +113,11 @@ export function useRegisterAccount() {
             }
 
             const res = await createUserWithEmailAndPassword(auth, account.email, account.password!);
-            const user = await addDoc(collection(firebaseDB, `/accounts`), {
+            await addDoc(collection(firebaseDB, `/accounts`), {
                 uid: res.user.uid,
                 name: account.name,
                 email: account.email,
                 userType: account.userType,
-                address: [],
             });
 
             setIsRegistered(true);
@@ -125,14 +134,42 @@ export function useRegisterAccount() {
     return { isRegistered, registerAccount, isLoading };
 }
 
-export function useUpdateAccountAddress(accountId: string) {
+export function useModifyAccountAddress(accountId: string) {
     const [isLoading, setIsLoading] = useState(false);
 
-    const updateAccountAddress = async (address: Account["address"]) => {
+    const addAccountAddress = async (address: Address) => {
         try {
             setIsLoading(true);
+            // add the address
+            await addDoc(collection(firebaseDB, `accounts/${accountId}/address`), address);
+            toast.success("Address updated successfully");
+            return { success: true, message: "Address updated successfully" };
+        } catch (error) {
+            console.error(error);
+            toast.error("Error updating address");
+            return { message: "Error adding address" };
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-            await setDoc(doc(firebaseDB, `accounts/${accountId}`), { address }, { merge: true });
+    const updateAccountAddress = async (address: Address) => {
+        try {
+            setIsLoading(true);
+            console.log(address);
+
+            // find the address
+            const querySnapshot = await getDocs(query(collection(firebaseDB, `accounts/${accountId}/address`),
+                where("_id", "==", address._id)));
+
+            if (querySnapshot.empty) {
+                toast.error("Address not found");
+                return { message: "Address not found" };
+            }
+
+            // update the address
+            await setDoc(querySnapshot.docs[0].ref, address);
+
             toast.success("Address updated successfully");
             return { success: true, message: "Address updated successfully" };
         } catch (error) {
@@ -142,12 +179,64 @@ export function useUpdateAccountAddress(accountId: string) {
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
-    return { updateAccountAddress, isLoading };
+    const deleteAccountAddress = async (addressId: string) => {
+        try {
+            setIsLoading(true);
+            // find the address using query of address == address._id
+            const querySnapshot = await getDocs(query(collection(firebaseDB, `accounts/${accountId}/address`),
+                where("_id", "==", addressId)));
+            if (querySnapshot.empty) {
+                toast.error("Address not found");
+                return { message: "Address not found" };
+            }
+
+            // delete the address
+            await deleteDoc(querySnapshot.docs[0].ref);
 
 
+            toast.success("Address deleted successfully");
+            return { success: true, message: "Address deleted successfully" };
+        } catch (error) {
+            console.error(error);
+            toast.error("Error deleting address");
+            return { message: "Error deleting address" };
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    return { isLoading, updateAccountAddress, addAccountAddress, deleteAccountAddress };
 }
+
+export function useGetListAccountAddress(accountId: string) {
+    const [addressList, setAddressList] = useState<Address[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!accountId) return;
+
+        const unsubscribe = onSnapshot(collection(firebaseDB, `accounts/${accountId}/address`),
+            async (snapshot) => {
+                const newAddressList = snapshot.docs.map((doc) => (
+                    doc.data() as Address
+                ));
+
+                setAddressList(newAddressList);
+                setIsLoading(false);
+            });
+
+        // Clean up the subscription on unmount
+        return () => unsubscribe();
+    }, [accountId]); // Depend on userId so it reruns the effect when userId changes
+
+    return { addressList, isLoading };
+}
+
+
+
 
 export function useGetAllAccounts() {
     const [accounts, setAccounts] = useState<Account[]>([]);

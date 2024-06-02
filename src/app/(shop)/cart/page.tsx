@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuthenticated } from "@/hooks/Authentication";
+import { useAuthenticated, useGetListAccountAddress, useModifyAccountAddress } from "@/hooks/Authentication";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 import { Address } from "@/interfaces/Account";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { AddAddressModal } from "@/components/AddAddressModal";
+import { toast } from "react-toastify";
+import { usePlaceOrder } from "@/hooks/Order";
 
 interface AddressModalProps {
   addresses: Address[];
@@ -18,6 +20,7 @@ interface AddressModalProps {
   onEditAddress: (newAddress: Address, id?: string) => void;
   onSelectAddress: (id?: string) => void;
   selectedAddressId: string | null;
+  accountId: string;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({
@@ -28,8 +31,10 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onEditAddress,
   onSelectAddress,
   selectedAddressId,
+  accountId,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const { placeOrder } = usePlaceOrder();
 
   useEffect(() => {
     setShowModal(true);
@@ -42,14 +47,12 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${
-        showModal ? "opacity-100" : "opacity-0"
-      } transition-opacity duration-300`}
+      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${showModal ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-300`}
     >
       <div
-        className={`bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${
-          showModal ? "scale-100" : "scale-75"
-        } transition-transform duration-300`}
+        className={`bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${showModal ? "scale-100" : "scale-75"
+          } transition-transform duration-300`}
       >
         <h2 className="text-xl font-semibold mb-4">Select Delivery Address</h2>
         <ul className="mb-4">
@@ -92,7 +95,10 @@ const AddressModal: React.FC<AddressModalProps> = ({
         {addresses.length > 0 && selectedAddressId ? (
           <button
             className="btn-green text-white py-2 px-4 rounded w-full mb-2"
-            onClick={() => {}}
+            onClick={() => {
+              //TODO ORDER
+              placeOrder(accountId, addresses.find((address) => address._id === selectedAddressId)!);
+            }}
           >
             Order Now
           </button>
@@ -122,30 +128,33 @@ export default function Page() {
     accountId || "0"
   );
   const totalPrice = cartList.reduce((total, item) => {
-    return total + item.price * (item.cartItemQuantity || 1);
+    return total + item.price * (item.cartItemQuantity);
   }, 0);
   const deliveryCharge = totalPrice > 1000 ? 0 : 100;
   const finalTotal = totalPrice + deliveryCharge;
 
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
-  const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [editAddress, setEditAddress] = useState<Address | null>(null);
+  const { addressList } = useGetListAccountAddress(accountId || "0");
+  const { updateAccountAddress, deleteAccountAddress, addAccountAddress } = useModifyAccountAddress(accountId || "0");
 
   const handleAddAddress = (newAddress: Address) => {
-    // TODO: save sa firestore
-    setAddresses([...addresses, newAddress]);
+    addAccountAddress(newAddress);
     setShowAddAddressModal(false);
     setShowAddressModal(true);
   };
 
   const handleDeleteAddress = (id?: string) => {
-    setAddresses(addresses.filter((address) => address._id !== id));
+    deleteAccountAddress(id!);
   };
 
   const handleEditAddress = (newDetails: Address, id?: string) => {
-    const addressToEdit = addresses.find((address) => address._id === id);
+    const addressToEdit = addressList.find((address) => address._id === id);
+    console.log(addressList);
+    console.log("addressToEdit", addressToEdit);
+    console.log("newDetails", newDetails);
 
     if (addressToEdit) {
       setEditAddress(addressToEdit);
@@ -154,11 +163,7 @@ export default function Page() {
   };
 
   const handleSaveEditedAddress = (editedAddress: Address) => {
-    setAddresses(
-      addresses.map((address) => {
-        return address._id === editedAddress._id ? editedAddress : address;
-      })
-    );
+    updateAccountAddress(editedAddress);
     setShowAddAddressModal(false);
     setEditAddress(null);
   };
@@ -193,7 +198,7 @@ export default function Page() {
             <ProductCheckout
               key={cartItem._id}
               product={cartItem}
-              quantity={cartItem.cartItemQuantity || 1}
+              quantity={cartItem.cartItemQuantity}
             />
           ))}
           {cartList.length > 0 ? (
@@ -227,7 +232,8 @@ export default function Page() {
 
       {showAddressModal && (
         <AddressModal
-          addresses={addresses}
+          accountId={accountId || "0"}
+          addresses={addressList}
           onClose={() => setShowAddressModal(false)}
           onAddAddress={() => {
             setShowAddressModal(false);

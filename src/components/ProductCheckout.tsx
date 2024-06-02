@@ -53,12 +53,10 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
               console.log(inputQuantity, product.quantity);
 
               if (inputQuantity > product.quantity) {
-                e.target.value = product.quantity.toString();
                 return;
               }
 
-              if (updateCart)
-                await updateCart(accountId, product._id, inputQuantity);
+              await updateCart(accountId, product._id, inputQuantity);
             }}
             className="w-16 p-1 border"
           />
@@ -70,6 +68,7 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
             addToCart(product);
           }}
         >
+          {product.quantity}
           <IconShoppingCartX />
           <span>Remove</span>
         </button>

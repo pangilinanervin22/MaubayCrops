@@ -92,31 +92,35 @@ export function useUpdateCart() {
     const updateCart = async (accountId: string, productId: string, inputCartItemQuantity: number) => {
         try {
 
-            const userRef = doc(firebaseDB, `/accounts/${accountId}`);
-            const docSnap = await getDoc(userRef);
-
-            if (!docSnap.exists()) {
-                toast.error("User not exist");
+            if (!accountId) {
+                toast.error("User not login");
                 return { ok: false, message: "User does not exist" };
             }
 
             // check if product is out of stock
             const productRef = doc(firebaseDB, `/products/${productId}`);
             const productSnap = await getDoc(productRef);
-
-            console.log(productSnap.data());
-
             if (!productSnap.exists()) {
                 toast("Product does not exist", { type: "error", toastId: productId });
                 return;
             }
 
+            const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${productId}`);
+            // if product quantity is less than input quantity, set cart item quantity to product quantity
             if (productSnap.data().quantity < inputCartItemQuantity) {
-                toast("Product out of stock", { type: "error", toastId: productId });
-                return;
+                await setDoc(docRef, { cartItemQuantity: productSnap.data().quantity }, { merge: true });
+                toast("Quantity is set the only available stock", { type: "warning", toastId: productId });
+                return { ok: true, message: "Cart updated" };
             }
 
-            const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${productId}`);
+            //if product is out of stock, remove it from cart
+            if (inputCartItemQuantity === 0) {
+                await deleteDoc(docRef);
+                toast("Product removed from cart", { type: "warning", toastId: productId });
+                return { ok: true, message: "Product removed from cart" };
+            }
+
+            // update cart item quantity
             await setDoc(docRef, { cartItemQuantity: inputCartItemQuantity }, { merge: true });
             return { ok: true, message: "Cart updated" };
         } catch (e) {
