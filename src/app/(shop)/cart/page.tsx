@@ -73,7 +73,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
           </li>
         ))}
       </ul>
-      {addresses.length > 0 ? (
+      {addresses.length > 0 && selectedAddressId ? (
         <button
           className="btn-green text-white py-2 px-4 rounded w-full mb-2"
           onClick={() => {}}
@@ -278,6 +278,8 @@ export default function Page() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [editAddress, setEditAddress] = useState<Address | null>(null);
+
+  console.log({ addresses, selectedAddressId });
 
   const handleAddAddress = (newAddress: Address) => {
     // TODO: save sa firestore
