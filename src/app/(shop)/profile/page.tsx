@@ -192,6 +192,7 @@ export default function Page() {
         <AddAddressModal
           onClose={() => {
             setShowAddAddressModal(false);
+            setEditAddress(null);
           }}
           onSave={editAddress ? handleSaveEditedAddress : handleAddAddress}
           onBack={() => {
