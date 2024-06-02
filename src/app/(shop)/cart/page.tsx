@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuthenticated } from "@/hooks/Authentication";
 import { useRouter } from "next/navigation";
+
+import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 import { Address } from "@/interfaces/Account";
@@ -73,7 +74,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
           </li>
         ))}
       </ul>
-      {addresses.length > 0 ? (
+      {addresses.length > 0 && selectedAddressId ? (
         <button
           className="btn-green text-white py-2 px-4 rounded w-full mb-2"
           onClick={() => {}}
@@ -100,12 +101,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
   onBack,
   editAddress = null,
 }) => {
-  const [receiverName, setReceiverName] = useState("");
-  const [contact, setContact] = useState("");
-  const [province, setProvince] = useState("");
-  const [city, setCity] = useState("");
-  const [barangay, setBarangay] = useState("");
-  const [landmark, setLandmark] = useState("");
+  const [receiverName, setReceiverName] = useState(
+    editAddress?.receiverName || ""
+  );
+  const [contact, setContact] = useState(editAddress?.phone || "");
+  const [province, setProvince] = useState(editAddress?.province || "");
+  const [city, setCity] = useState(editAddress?.city || "");
+  const [barangay, setBarangay] = useState(editAddress?.barangay || "");
+  const [landmark, setLandmark] = useState(editAddress?.landmark || "");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -132,6 +135,20 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
   };
 
   const handleSave = () => {
+    if (editAddress) {
+      const editedAddress: Address = {
+        ...editAddress,
+        receiverName,
+        phone: contact,
+        province,
+        city,
+        barangay,
+        landmark,
+      };
+      onSave(editedAddress);
+      return;
+    }
+
     const newAddress: Address = {
       _id: Math.random().toString(),
       receiverName,
@@ -283,6 +300,7 @@ export default function Page() {
     // TODO: save sa firestore
     setAddresses([...addresses, newAddress]);
     setShowAddAddressModal(false);
+    setShowAddressModal(true);
   };
 
   const handleDeleteAddress = (id?: string) => {
@@ -300,9 +318,9 @@ export default function Page() {
 
   const handleSaveEditedAddress = (editedAddress: Address) => {
     setAddresses(
-      addresses.map((address) =>
-        address._id === editedAddress._id ? editedAddress : address
-      )
+      addresses.map((address) => {
+        return address._id === editedAddress._id ? editedAddress : address;
+      })
     );
     setShowAddAddressModal(false);
     setEditAddress(null);
