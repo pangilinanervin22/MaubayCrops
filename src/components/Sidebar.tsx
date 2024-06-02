@@ -1,9 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
 import { IconX } from "@tabler/icons-react";
+
+
 import { Brand } from "./Brand";
+import { useAuthenticated } from "@/hooks/Authentication";
+import { useGetWishListProduct } from "@/hooks/WishList";
+import { useGetCartList } from "@/hooks/Cart";
 
 interface SidebarProps {
   isVisible: boolean;
@@ -11,7 +15,12 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isVisible, sidebarToggler }) => {
+  const { accountId, isAuthenticated, logout } = useAuthenticated();
+  const { wishList } = useGetWishListProduct(accountId || "0");
+  const { cartList } = useGetCartList(accountId || "0");
+
   const router = useRouter();
+
   return (
     <div
       className={`fixed inset-0 z-50 transition-transform duration-500 transform ${
@@ -26,30 +35,51 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, sidebarToggler }) => {
         </section>
         <nav>
           <ul className="space-y-4">
-            <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
+            <li
+              className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50"
+              onClick={() => {
+                router.push("/products");
+              }}
+            >
               Show All Products
             </li>
             <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
               Search Products
             </li>
-            <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
-              Cart (0)
+            <li
+              className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50"
+              onClick={() => {
+                router.push("/cart");
+              }}
+            >
+              {`Cart (${cartList.length})`}
             </li>
-            <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
-              Wishlist(10)
+            <li
+              className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50"
+              onClick={() => {
+                router.push("/wishlist");
+              }}
+            >
+              {`Wishlist (${wishList.length})`}
             </li>
             <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
               Profile
             </li>
             <li className="mt-2">
-              <button
-                className="btn-green px-4 py-2"
-                onClick={() => {
-                  router.push("/login");
-                }}
-              >
-                Login
-              </button>
+              {isAuthenticated ? (
+                <button className="btn-green" onClick={logout}>
+                  Logout
+                </button>
+              ) : (
+                <button
+                  className="btn-green"
+                  onClick={() => {
+                    router.push("/login");
+                  }}
+                >
+                  Login
+                </button>
+              )}
             </li>
           </ul>
         </nav>

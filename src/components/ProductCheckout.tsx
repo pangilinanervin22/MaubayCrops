@@ -64,7 +64,7 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
         </section>
         <h3 className="text-lg font-bold text-black mb-2">₱{product.price}</h3>
         <button
-          className="bg-white w-full justify-center md:w-fit text-primary transition-colors duration-200 hover:bg-extra-light-green py-1 px-3 rounded flex items-center gap-2"
+          className="btn-light w-full justify-center md:w-fit py-1 px-3 rounded flex items-center gap-2"
           onClick={() => {
             addToCart(product);
           }}
