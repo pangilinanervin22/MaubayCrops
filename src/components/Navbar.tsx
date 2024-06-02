@@ -66,22 +66,22 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
               Login
             </button>
           )}
-          <div className="relative cursor-pointer">
-            <IconHeart
-              className="h-10 w-10 cursor"
-              onClick={() => router.push("/wishlist")}
-            />
+          <div
+            className="relative cursor-pointer"
+            onClick={() => router.push("/wishlist")}
+          >
+            <IconHeart className="h-10 w-10 cursor" />
             <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
               {wishList.length}
             </span>
           </div>
-          <div className="relative cursor-pointer">
-            <IconShoppingCart
-              className="h-10 w-10"
-              onClick={() => {
-                router.push("/cart");
-              }}
-            />
+          <div
+            className="relative cursor-pointer"
+            onClick={() => {
+              router.push("/cart");
+            }}
+          >
+            <IconShoppingCart className="h-10 w-10" />
             <span className="absolute bg-dark-green text-white top-0 left-5 py-0.5 px-2 rounded-full">
               {cartList.length}
             </span>
