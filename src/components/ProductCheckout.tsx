@@ -5,6 +5,7 @@ import { IconShoppingCartX } from "@tabler/icons-react";
 import { CartItem } from "@/interfaces/Account";
 import { useAddToCart } from "@/hooks/Cart";
 import { useAuthenticated } from "@/hooks/Authentication";
+import { useRouter } from "next/navigation";
 
 interface ProductCheckoutProps {
   product: CartItem;
@@ -19,12 +20,17 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
 }) => {
   const { accountId } = useAuthenticated();
   const { addToCart } = useAddToCart(accountId || "");
+  const router = useRouter();
+
   return (
     <section className="flex flex-col md:flex-row items-center mb-4">
       <img
-        className="h-32 w-32 object-cover mr-4 rounded-md"
+        className="h-32 w-32 xl:h-60 xl:w-60 object-contain mr-4 rounded-md cursor-pointer"
         src={product.imgUrl}
-        alt=""
+        alt="Product Image"
+        onClick={() => {
+          router.push(`/products/${product._id}`);
+        }}
       />
       <section className="flex flex-col">
         <h2 className="text-lg font-semibold text-center md:text-left mb-2">
