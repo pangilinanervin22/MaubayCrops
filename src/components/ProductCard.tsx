@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { IconHeart, IconStar, IconShoppingCart } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
@@ -40,10 +41,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
       >
         <IconHeart color="red" fill={isWishList ? "red" : "transparent"} />
       </button>
-      <img
+      <Image
         className="rounded-t-md h-60 w-full object-cover cursor-pointer"
         src={product.imgUrl}
         alt="product image"
+        width={200}
+        height={200}
         onClick={() => {
           router.push(`/products/${product._id}`);
         }}
