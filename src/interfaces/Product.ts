@@ -4,6 +4,7 @@ export class Product implements IProduct {
   description: string;
   imgUrl: string;
   price: number;
+  quantity: number;
   productDetails: IProductDetails;
   rating: number;
   title: string;
@@ -14,6 +15,7 @@ export class Product implements IProduct {
     description: string,
     imgUrl: string,
     price: number,
+    quantity: number,
     productDetails: IProductDetails,
     rating: number,
     title: string
@@ -23,6 +25,7 @@ export class Product implements IProduct {
     this.description = description;
     this.imgUrl = imgUrl;
     this.price = price;
+    this.quantity = quantity;
     this.productDetails = productDetails;
     this.rating = rating;
     this.title = title;
@@ -34,6 +37,7 @@ export class Product implements IProduct {
       description,
       imgUrl,
       price,
+      quantity,
       productDetails,
       rating,
       title,
@@ -44,6 +48,7 @@ export class Product implements IProduct {
       description,
       imgUrl,
       price,
+      quantity,
       productDetails,
       rating,
       title
@@ -57,6 +62,7 @@ export interface IProduct {
   description: string;
   imgUrl: string;
   price: number;
+  quantity: number;
   productDetails: IProductDetails;
   rating: number;
   title: string;
