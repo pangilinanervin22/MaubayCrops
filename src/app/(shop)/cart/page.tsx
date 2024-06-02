@@ -88,7 +88,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
       >
         Add New Address
       </button>
-      <button className="py-2 px-4 rounded w-full" onClick={onClose}>
+      <button className="py-2 px-4 btn-light" onClick={onClose}>
         Close
       </button>
     </div>
@@ -262,14 +262,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
           Save Address
         </button>
         <button
-          className="py-2 px-4 rounded w-full mb-2"
+          className="btn-light py-2 px-4"
           type="button"
           onClick={onBack}
         >
           Back
         </button>
         <button
-          className="py-2 px-4 rounded w-full"
+          className="btn-light py-2 px-4"
           type="button"
           onClick={onClose}
         >
