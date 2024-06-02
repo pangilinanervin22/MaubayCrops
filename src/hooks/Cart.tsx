@@ -24,7 +24,7 @@ export function useGetCartList(accountId: string) {
                 if (productSnapshot.exists()) {
                     return {
                         ...productSnapshot.data(),
-                        quantity: currentDoc.data().quantity,
+                        cartItemQuantity: currentDoc.data().quantity,
                         productId: productId,
                         _id: productId
                     } as CartItem;
@@ -77,7 +77,7 @@ export function useAddToCart(accountId: string) {
             }
 
             const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${product._id}`);
-            await setDoc(docRef, { quantity: 1, productId: product._id });
+            await setDoc(docRef, { cartItemQuantity: 1, productId: product._id });
             toast.success("Product added to cart");
             return { ok: true, message: "Product added to cart" };
         } catch (e) {
