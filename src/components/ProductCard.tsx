@@ -1,6 +1,7 @@
 "use client";
 
 import { IconHeart, IconStar, IconShoppingCart } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 import { IProduct } from "../interfaces/Product";
 import { useAddWishList } from "@/hooks/WishList";
@@ -23,6 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { addWishList } = useAddWishList(accountId || "");
   const { addToCart } = useAddToCart(accountId || "");
+  const router = useRouter();
 
   return (
     <section
@@ -41,9 +43,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <IconHeart color="red" fill={isWishList ? "red" : "transparent"} />
       </button>
       <img
-        className="rounded-t-md h-60 w-full object-cover"
+        className="rounded-t-md h-60 w-full object-cover cursor-pointer"
         src={product.imgUrl}
         alt="product image"
+        onClick={() => {
+          router.push(`/products/${product._id}`);
+        }}
       />
       <section className="flex flex-col space-y-2 p-2">
         <span className="line-clamp-2">{product.title}</span>
