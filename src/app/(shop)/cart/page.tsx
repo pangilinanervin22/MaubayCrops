@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useRouter } from "next/navigation";
-import { useGetWishListProduct } from "@/hooks/WishList";
-import { useGetCartList } from "@/hooks/Cart";
+import { useGetCartList, useUpdateCart } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 
 interface Quantity {
@@ -14,14 +13,14 @@ export default function Page() {
   const router = useRouter();
   const { isAuthenticated, isLoading, accountId } = useAuthenticated();
   const { cartList } = useGetCartList(accountId || "0");
-
   const [quantities, setQuantities] = useState<Quantity>({});
+  console.log(cartList, quantities);
+
 
   useEffect(() => {
     if (cartList.length > 0) {
-      console.log(cartList);
       const initialQuantities = cartList.reduce((acc: Quantity, item) => {
-        acc[item._id] = 1; // initial quantity is 1
+        acc[item._id] = item.cartItemQuantity; // initial quantity is 1
         return acc;
       }, {});
       setQuantities(initialQuantities);

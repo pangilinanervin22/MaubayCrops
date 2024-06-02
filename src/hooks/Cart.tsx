@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { firebaseDB } from "@/config/FirebaseConfig";
 import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, setDoc } from "firebase/firestore";
 import { Product } from "@/interfaces/Product";
 import { CartItem } from "@/interfaces/Account";
 import { toast } from "react-toastify";
-import { log } from "console";
 
 export function useGetCartList(accountId: string) {
     const [cartList, setCartList] = useState<CartItem[]>([]);
@@ -24,7 +23,7 @@ export function useGetCartList(accountId: string) {
                 if (productSnapshot.exists()) {
                     return {
                         ...productSnapshot.data(),
-                        cartItemQuantity: currentDoc.data().quantity,
+                        cartItemQuantity: currentDoc.data().cartItemQuantity,
                         productId: productId,
                         _id: productId
                     } as CartItem;
@@ -89,14 +88,8 @@ export function useAddToCart(accountId: string) {
     return { addToCart };
 }
 
-export function useUpdateCart(accountId: string, productId: string, quantity: number) {
-
-    if (!accountId) {
-        toast.error("User not login");
-        return { ok: false, message: "User does not exist" };
-    }
-
-    const updateCart = async (quantity: number) => {
+export function useUpdateCart() {
+    const updateCart = async (accountId: string, productId: string, inputCartItemQuantity: number) => {
         try {
 
             const userRef = doc(firebaseDB, `/accounts/${accountId}`);
@@ -110,21 +103,24 @@ export function useUpdateCart(accountId: string, productId: string, quantity: nu
             // check if product is out of stock
             const productRef = doc(firebaseDB, `/products/${productId}`);
             const productSnap = await getDoc(productRef);
+
+            console.log(productSnap.data());
+
             if (!productSnap.exists()) {
                 toast("Product does not exist", { type: "error", toastId: productId });
                 return;
             }
 
-            if (productSnap.data().stock < quantity) {
+            if (productSnap.data().quantity < inputCartItemQuantity) {
                 toast("Product out of stock", { type: "error", toastId: productId });
                 return;
             }
 
             const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${productId}`);
-            await setDoc(docRef, { quantity: quantity }, { merge: true });
-            return;
+            await setDoc(docRef, { cartItemQuantity: inputCartItemQuantity }, { merge: true });
+            return { ok: true, message: "Cart updated" };
         } catch (e) {
-            return;
+            return { ok: false, message: "Failed to update cart" };
         }
     };
 
