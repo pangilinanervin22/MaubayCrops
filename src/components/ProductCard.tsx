@@ -31,9 +31,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       key={key}
       className=" h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md"
     >
-      <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
+      {/* <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
         Best Seller
-      </span>
+      </span> */}
       <button
         className="absolute h-12 w-12 top-0 right-0 grid place-content-center"
         onClick={() => {
