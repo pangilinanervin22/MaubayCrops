@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { IconHeart, IconShoppingCart } from "@tabler/icons-react";
 
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -31,10 +32,12 @@ export default function Page({ params }: { params: { productId: string } }) {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center px-5 lg:px-10 xl:px-20 py-6 bg-extra-light-green">
       <div className="w-full text-center">
-        <img
+        <Image
           src={product.imgUrl}
           alt="Product Image"
           className="h-96 w-96 object-cover rounded-md mx-auto"
+          width={200}
+          height={200}
         />
       </div>
       <div className="w-full max-w-7xl mt-6 bg-white p-6 rounded-lg shadow-lg">
