@@ -16,7 +16,6 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  key,
   product,
   accountId,
   isWishList,
@@ -28,7 +27,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <section
-      key={key}
       className=" h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md"
     >
       {/* <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
