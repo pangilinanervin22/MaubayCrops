@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { Address } from "@/interfaces/Account";
 
 interface AddAddressModalProps {
@@ -27,6 +26,12 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
   const [city, setCity] = useState(editAddress?.city || "");
   const [barangay, setBarangay] = useState(editAddress?.barangay || "");
   const [landmark, setLandmark] = useState(editAddress?.landmark || "");
+
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setShowModal(true);
+  }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -80,10 +85,26 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
     onSave(newAddress);
   };
 
+  const handleClose = () => {
+    setShowModal(false);
+    setTimeout(onClose, 300); // wait for animation to finish
+  };
+
+  const handleBack = () => {
+    setShowModal(false);
+    setTimeout(onBack, 300); // wait for animation to finish
+  };
+
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+    <div
+      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${
+        showModal ? "opacity-100" : "opacity-0"
+      } transition-opacity duration-300`}
+    >
       <form
-        className="bg-white space-y-3 p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3"
+        className={`bg-white space-y-3 p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${
+          showModal ? "scale-100" : "scale-75"
+        } transition-transform duration-300`}
         onSubmit={handleSave}
       >
         <h2 className="text-xl font-semibold mb-4">
@@ -183,12 +204,16 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
           <button
             className="btn-light py-2 px-4"
             type="button"
-            onClick={onBack}
+            onClick={handleBack}
           >
             Back
           </button>
         )}
-        <button className="btn-light py-2 px-4" type="button" onClick={onClose}>
+        <button
+          className="btn-light py-2 px-4"
+          type="button"
+          onClick={handleClose}
+        >
           Close
         </button>
       </form>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuthenticated } from "@/hooks/Authentication";
@@ -28,67 +28,88 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onEditAddress,
   onSelectAddress,
   selectedAddressId,
-}) => (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3">
-      <h2 className="text-xl font-semibold mb-4">Select Delivery Address</h2>
-      <ul className="mb-4">
-        {addresses.map((address) => (
-          <li
-            key={address._id}
-            className="border p-2 mb-2 flex justify-between"
+}) => {
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setShowModal(true);
+  }, []);
+
+  const handleClose = () => {
+    setShowModal(false);
+    setTimeout(onClose, 300); // wait for animation to finish
+  };
+
+  return (
+    <div
+      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${
+        showModal ? "opacity-100" : "opacity-0"
+      } transition-opacity duration-300`}
+    >
+      <div
+        className={`bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${
+          showModal ? "scale-100" : "scale-75"
+        } transition-transform duration-300`}
+      >
+        <h2 className="text-xl font-semibold mb-4">Select Delivery Address</h2>
+        <ul className="mb-4">
+          {addresses.map((address) => (
+            <li
+              key={address._id}
+              className="border p-2 mb-2 flex justify-between"
+            >
+              <div>
+                <input
+                  type="radio"
+                  name="address"
+                  checked={selectedAddressId === address._id}
+                  onChange={() => onSelectAddress(address._id)}
+                />
+                <span>{address.receiverName}</span>
+                <p>{address.phone}</p>
+                <p>{address.province}</p>
+                <p>{address.city}</p>
+                <p>{address.barangay}</p>
+                <p>{address.landmark}</p>
+              </div>
+              <div className="flex items-center">
+                <button
+                  className="text-black py-1 px-2 rounded mr-2"
+                  onClick={() => onEditAddress(address, address._id)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="text-black py-1 px-2 rounded"
+                  onClick={() => onDeleteAddress(address._id!)}
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+        {addresses.length > 0 && selectedAddressId ? (
+          <button
+            className="btn-green text-white py-2 px-4 rounded w-full mb-2"
+            onClick={() => {}}
           >
-            <div>
-              <input
-                type="radio"
-                name="address"
-                checked={selectedAddressId === address._id}
-                onChange={() => onSelectAddress(address._id)}
-              />
-              <span>{address.receiverName}</span>
-              <p>{address.phone}</p>
-              <p>{address.province}</p>
-              <p>{address.city}</p>
-              <p>{address.barangay}</p>
-              <p>{address.landmark}</p>
-            </div>
-            <div className="flex items-center">
-              <button
-                className="text-black py-1 px-2 rounded mr-2"
-                onClick={() => onEditAddress(address, address._id)}
-              >
-                Edit
-              </button>
-              <button
-                className="text-black py-1 px-2 rounded"
-                onClick={() => onDeleteAddress(address._id!)}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {addresses.length > 0 && selectedAddressId ? (
+            Order Now
+          </button>
+        ) : null}
         <button
           className="btn-green text-white py-2 px-4 rounded w-full mb-2"
-          onClick={() => {}}
+          onClick={onAddAddress}
         >
-          Order Now
+          Add New Address
         </button>
-      ) : null}
-      <button
-        className="btn-green  text-white py-2 px-4 rounded w-full mb-2"
-        onClick={onAddAddress}
-      >
-        Add New Address
-      </button>
-      <button className="py-2 px-4 btn-light" onClick={onClose}>
-        Close
-      </button>
+        <button className="py-2 px-4 btn-light" onClick={handleClose}>
+          Close
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function Page() {
   const router = useRouter();
