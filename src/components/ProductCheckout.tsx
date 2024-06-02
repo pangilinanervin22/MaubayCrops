@@ -3,7 +3,7 @@
 import { IconShoppingCartX } from "@tabler/icons-react";
 
 import { CartItem } from "@/interfaces/Account";
-import { useAddToCart } from "@/hooks/Cart";
+import { useAddToCart, useUpdateCart } from "@/hooks/Cart";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useRouter } from "next/navigation";
 
@@ -20,6 +20,7 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
 }) => {
   const { accountId } = useAuthenticated();
   const { addToCart } = useAddToCart(accountId || "");
+  const { updateCart } = useUpdateCart();
   const router = useRouter();
 
   return (
@@ -46,13 +47,20 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
             value={quantity}
             max={product.quantity}
             min={1}
-            onChange={(e) => {
-              if (parseInt(e.target.value) > product.quantity) {
+            onChange={async (e) => {
+
+              const inputQuantity = parseInt(e.target.value);
+              console.log(inputQuantity, product.quantity);
+
+              if (inputQuantity > product.quantity) {
                 e.target.value = product.quantity.toString();
                 return;
               }
 
-              onQuantityChange(product._id, parseInt(e.target.value));
+              if (updateCart)
+                await updateCart(accountId, product._id, inputQuantity);
+
+              onQuantityChange(product._id, inputQuantity);
             }}
             className="w-16 p-1 border"
           />
