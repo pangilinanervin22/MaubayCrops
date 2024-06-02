@@ -7,7 +7,7 @@ import {
   IconShoppingCart,
   IconUserCircle,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Brand } from "./Brand";
@@ -16,9 +16,9 @@ import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useGetCartList } from "@/hooks/Cart";
 
-interface NavbarProps { }
+interface NavbarProps {}
 
-const Navbar: React.FC<NavbarProps> = ({ }) => {
+const Navbar: React.FC<NavbarProps> = ({}) => {
   const { isAuthenticated, accountId, logout } = useAuthenticated();
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const { wishList } = useGetWishListProduct(accountId || "0");
@@ -81,7 +81,12 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
               {cartList.length}
             </span>
           </div>
-          <IconUserCircle className="h-10 w-10" />
+          <IconUserCircle
+            className="h-10 w-10 cursor-pointer"
+            onClick={() => {
+              router.push("/profile");
+            }}
+          />
         </section>
       </nav>
       <Sidebar isVisible={isSidebarVisible} sidebarToggler={toggleSidebar} />
