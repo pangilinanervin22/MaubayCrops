@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { IconShoppingCartX } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 import { CartItem } from "@/interfaces/Account";
 import { useAddToCart, useUpdateCart } from "@/hooks/Cart";
 import { useAuthenticated } from "@/hooks/Authentication";
-import { useRouter } from "next/navigation";
 
 interface ProductCheckoutProps {
   product: CartItem;
@@ -23,13 +24,15 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
 
   return (
     <section className="flex flex-col md:flex-row items-center mb-4">
-      <img
+      <Image
         className="h-32 w-32 xl:h-60 xl:w-60 object-contain mr-4 rounded-md cursor-pointer"
         src={product.imgUrl}
         alt="Product Image"
         onClick={() => {
           router.push(`/products/${product._id}`);
         }}
+        width={200}
+        height={200}
       />
       <section className="flex flex-col">
         <h2 className="text-lg font-semibold text-left mb-2">
@@ -46,7 +49,6 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
             max={product.quantity}
             min={1}
             onChange={async (e) => {
-
               const inputQuantity = parseInt(e.target.value);
               console.log(inputQuantity, product.quantity);
 
@@ -57,7 +59,6 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
 
               if (updateCart)
                 await updateCart(accountId, product._id, inputQuantity);
-
             }}
             className="w-16 p-1 border"
           />
