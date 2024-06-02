@@ -67,7 +67,7 @@ export default function Page() {
             Email <span className="text-red-700">*</span>
           </label>
           <input
-            className="border-2 border-gray-300 rounded-md p-2"
+            className="input"
             type="email"
             id="email"
             name="email"
@@ -80,7 +80,7 @@ export default function Page() {
           </label>
           <div className="flex justify-between relative">
             <input
-              className="w-full border-2 border-gray-300 rounded-md p-2"
+              className="w-full input"
               type={isPasswordVisible ? "text" : "password"}
               id="password"
               name="password"
