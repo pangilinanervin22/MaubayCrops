@@ -50,8 +50,6 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
             min={1}
             onChange={async (e) => {
               const inputQuantity = parseInt(e.target.value);
-              console.log(inputQuantity, product.quantity);
-
               if (inputQuantity > product.quantity) {
                 return;
               }
@@ -68,7 +66,6 @@ const ProductCheckout: React.FC<ProductCheckoutProps> = ({
             addToCart(product);
           }}
         >
-          {product.quantity}
           <IconShoppingCartX />
           <span>Remove</span>
         </button>
