@@ -21,7 +21,7 @@ export interface Address {
 }
 
 export interface CartItem extends Product {
-    quantity: number;
+    cartItemQuantity: number;
     productId: string;
 }
 
