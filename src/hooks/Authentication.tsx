@@ -211,7 +211,7 @@ export function useModifyAccountAddress(accountId: string) {
     return { isLoading, updateAccountAddress, addAccountAddress, deleteAccountAddress };
 }
 
-export function useGetListAccountAddress(accountId: string) {
+export function useAccountGetAddressList(accountId: string) {
     const [addressList, setAddressList] = useState<Address[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 

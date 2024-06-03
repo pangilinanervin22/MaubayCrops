@@ -7,62 +7,23 @@ import { useState } from "react";
 import { Address } from "@/interfaces/Account";
 import { AddAddressModal } from "@/components/AddAddressModal";
 import { IconPencil } from "@tabler/icons-react";
+import { useAuthenticated, useAccountGetAddressList, useModifyAccountAddress } from "@/hooks/Authentication";
 
 export default function Page() {
+  const { accountId } = useAuthenticated();
+  const { addressList } = useAccountGetAddressList(accountId);
   const router = useRouter();
+  const { addAccountAddress, updateAccountAddress } = useModifyAccountAddress(accountId);
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
-  const dummyData: Address[] = [
-    {
-      _id: "1",
-      receiverName: "John Doe",
-      phone: "09171234567",
-      province: "Laguna",
-      city: "San Pedro",
-      barangay: "Barangay San Antonio",
-      landmark: "Near San Antonio Church",
-    },
-    {
-      _id: "2",
-      receiverName: "Jane Smith",
-      phone: "09181234567",
-      province: "Cebu",
-      city: "Cebu City",
-      barangay: "Barangay Lahug",
-      landmark: "Near IT Park",
-    },
-    {
-      _id: "3",
-      receiverName: "Carlos Garcia",
-      phone: "09192234567",
-      province: "Davao del Sur",
-      city: "Davao City",
-      barangay: "Barangay Buhangin",
-      landmark: "Near SM Lanang",
-    },
-    {
-      _id: "4",
-      receiverName: "Maria Santos",
-      phone: "09193234567",
-      province: "Rizal",
-      city: "Antipolo",
-      barangay: "Barangay San Roque",
-      landmark: "Near Antipolo Cathedral",
-    },
-  ];
-  const [addresses, setAddresses] = useState<Address[]>(dummyData);
   const [editAddress, setEditAddress] = useState<Address | null>(null);
 
   const handleAddAddress = (newAddress: Address) => {
-    setAddresses([...addresses, newAddress]);
+    addAccountAddress(newAddress);
     setShowAddAddressModal(false);
   };
 
   const handleSaveEditedAddress = (editedAddress: Address) => {
-    setAddresses(
-      addresses.map((address) => {
-        return address._id === editedAddress._id ? editedAddress : address;
-      })
-    );
+    updateAccountAddress(editedAddress);
     setShowAddAddressModal(false);
     setEditAddress(null);
   };
@@ -118,7 +79,7 @@ export default function Page() {
         </h2>
 
         <ul className="list-none grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-gray-700 p-4">
-          {addresses.map((address, index) => (
+          {addressList.map((address, index) => (
             <li
               key={index}
               className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm relative"

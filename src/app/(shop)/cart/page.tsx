@@ -1,15 +1,14 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuthenticated, useGetListAccountAddress, useModifyAccountAddress } from "@/hooks/Authentication";
+import { useAuthenticated, useAccountGetAddressList, useModifyAccountAddress } from "@/hooks/Authentication";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 import { Address } from "@/interfaces/Account";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { AddAddressModal } from "@/components/AddAddressModal";
-import { toast } from "react-toastify";
 import { usePlaceOrder } from "@/hooks/Order";
 
 interface AddressModalProps {
@@ -137,7 +136,7 @@ export default function Page() {
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [editAddress, setEditAddress] = useState<Address | null>(null);
-  const { addressList } = useGetListAccountAddress(accountId || "0");
+  const { addressList } = useAccountGetAddressList(accountId || "0");
   const { updateAccountAddress, deleteAccountAddress, addAccountAddress } = useModifyAccountAddress(accountId || "0");
 
   const handleAddAddress = (newAddress: Address) => {
