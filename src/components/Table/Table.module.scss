@@ -2,7 +2,6 @@
 
 .container_table {
     padding: 16px;
-    background: #eeeeee;
     width: 80%;
     margin: 0 auto;
 
@@ -111,6 +110,7 @@
             height: 100%;
             padding: 10px;
             border-radius: 10px;
+            border: #343434 1px solid;
         }
 
         >:last-child {

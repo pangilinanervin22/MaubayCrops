@@ -14,8 +14,8 @@ const Brand: React.FC<BrandProps> = ({}) => {
         router.push("/");
       }}
     >
-      <span className="text-primary">Agro</span>
-      <span className="text-dark-brown">Stores</span>
+      <span className="text-primary">Maubay</span>
+      <span className="text-dark-brown">Crops</span>
     </span>
   );
 };
