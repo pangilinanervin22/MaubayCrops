@@ -10,10 +10,9 @@ export default function Page() {
   const { accountId } = useAuthenticated();
   const { wishList } = useGetWishListProduct(accountId || "0");
   const { cartList } = useGetCartList(accountId || "0");
-
   const { products, isLoading } = useGetProducts();
-  const [priceRange, setPriceRange] = useState("1000");
-  const [categories, setCategories] = useState(new Set());
+  const [priceRange, setPriceRange] = useState("1500");
+  // const [categories, setCategories] = useState(new Set());
   const [rating, setRating] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
@@ -23,39 +22,52 @@ export default function Page() {
       case "priceRange":
         setPriceRange(e.target.value);
         break;
-      case "categories[]":
-        if (!e.target.checked && categories.has(e.target.id)) {
-          categories.delete(e.target.id);
-          setCategories(new Set(categories));
-        } else if (e.target.checked && !categories.has(e.target.id)) {
-          categories.add(e.target.id);
-          setCategories(new Set(categories));
-        }
-        break;
-      case "ratings[]":
-        setRating(e.target.id);
+        // case "categories[]":
+        //   if (!e.target.checked && categories.has(e.target.id)) {
+        //     categories.delete(e.target.id);
+        //     setCategories(new Set(categories));
+        //   } else if (e.target.checked && !categories.has(e.target.id)) {
+        //     categories.add(e.target.id);
+        //     setCategories(new Set(categories));
+        //   }
         break;
       case "availability":
         setHideOutOfStock(e.target.checked);
         break;
     }
 
-    console.log({
-      priceRange,
-      categories,
-      rating,
-      sortBy,
-      hideOutOfStock,
-    });
   };
 
   const clearFilters = () => {
-    setPriceRange("1000");
-    setCategories(new Set());
-    setRating("");
+    setPriceRange("1500");
+    // setCategories(new Set());
     setSortBy("");
     setHideOutOfStock(false);
   };
+
+  let filteredProducts = structuredClone(products.filter((product) => {
+    const price = product.price;
+    // const hasCategory = categories.size
+    //   ? categories.has(product.categoryName.toLowerCase())
+    //   : true;
+    const isAvailable = hideOutOfStock
+      ? product.quantity <= 0
+      : true;
+
+    return (
+      price <= parseInt(priceRange) &&
+      // hasCategory &&
+      isAvailable
+    );
+  }).sort((a, b) => {
+    if (sortBy === "asc") {
+      return a.price - b.price;
+    } else if (sortBy === "desc") {
+      return b.price - a.price;
+    } else {
+      return 0;
+    }
+  }));
 
   return (
     <main className="min-h-screen bg-extra-light-green">
@@ -67,7 +79,7 @@ export default function Page() {
             <button onClick={clearFilters}>Clear</button>
           </section>
           <div className="flex flex-col">
-            <label htmlFor="priceRange">Price in P</label>
+            <label htmlFor="priceRange">Price in P{priceRange}</label>
             <input
               type="range"
               name="priceRange"
@@ -79,7 +91,7 @@ export default function Page() {
               onChange={handleFormChange}
             />
           </div>
-          <section>
+          {/* <section>
             <h2>Categories</h2>
             <ul>
               <li>
@@ -103,52 +115,7 @@ export default function Page() {
                 <label htmlFor="pesticides">Pesticides</label>
               </li>
             </ul>
-          </section>
-          <section>
-            <h3>Ratings</h3>
-            <ul>
-              <li>
-                <input
-                  type="radio"
-                  name="ratings[]"
-                  id="4^"
-                  checked={rating === "4^"}
-                  onChange={handleFormChange}
-                />
-                <label htmlFor="4^">4 stars & above</label>
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="ratings[]"
-                  id="3^"
-                  checked={rating === "3^"}
-                  onChange={handleFormChange}
-                />
-                <label htmlFor="3^">3 stars & above</label>
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="ratings[]"
-                  id="2^"
-                  checked={rating === "2^"}
-                  onChange={handleFormChange}
-                />
-                <label htmlFor="2^">2 stars & above</label>
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="ratings[]"
-                  id="1^"
-                  checked={rating === "1^"}
-                  onChange={handleFormChange}
-                />
-                <label htmlFor="1^">1 star & above</label>
-              </li>
-            </ul>
-          </section>
+          </section> */}
           <section>
             <h4>Sort By Price</h4>
             <select
@@ -180,7 +147,7 @@ export default function Page() {
           </section>
         </aside>
         <section className="w-full p-2 grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {products.map((product) => {
+          {filteredProducts.map((product) => {
             const isWishList = wishList.some(
               (wish) => wish._id === product._id
             );
@@ -188,7 +155,6 @@ export default function Page() {
             const isCartList = cartList.some(
               (cart) => cart.productId === product._id
             );
-
             return (
               <ProductCard
                 key={product._id}
