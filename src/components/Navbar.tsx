@@ -36,16 +36,6 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
           <IconMenu2 className="h-10 w-10" />
         </button>
         <Brand />
-        <section className="hidden lg:block">
-          <div className="flex justify-between relative">
-            <input
-              className="rounded-md p-2 pr-10" // Add padding to the right to make space for the icon
-              type="text"
-              placeholder="Search"
-            />
-            <IconSearch className="absolute top-1/2 transform -translate-y-1/2 right-2" />{" "}
-          </div>
-        </section>
         <section className="hidden lg:flex space-x-6">
           {isAuthenticated ? (
             <button className="btn-green" onClick={logout}>
