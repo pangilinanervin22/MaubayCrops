@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
 
         {children}
-        <ToastContainer autoClose={3000} />
+        <ToastContainer autoClose={3000} position="bottom-left" />
       </body>
     </html>
   );

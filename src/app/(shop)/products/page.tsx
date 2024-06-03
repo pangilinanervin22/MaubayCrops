@@ -16,6 +16,7 @@ export default function Page() {
   const [rating, setRating] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
@@ -49,8 +50,9 @@ export default function Page() {
       .filter((product) => {
         const price = product.price;
         const isAvailable = hideOutOfStock ? product.quantity > 0 : true;
+        const isSearchMatch = product.title.toLowerCase().includes(search);
 
-        return price <= parseInt(priceRange) && isAvailable;
+        return price <= parseInt(priceRange) && isAvailable && isSearchMatch;
       })
       .sort((a, b) => {
         if (sortBy === "asc") {
@@ -63,16 +65,21 @@ export default function Page() {
       })
   );
 
-  console.log(filteredProducts);
-
   return (
     <main className="min-h-screen bg-extra-light-green">
       <section className="flex">
         <aside className="bg-light-blue text-black hidden md:block w-80 p-6 m-5 sticky top-0 rounded-md h-fit">
-          <section className="flex justify-between">
-            <h1>Filters</h1>
-
-            <button onClick={clearFilters}>Clear</button>
+          <section>
+            <h4>Search Product</h4>
+            <input
+              type="text"
+              name="search"
+              placeholder="Search..."
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              className="border border-gray-300 rounded-md p-2 mb-4"
+            />
           </section>
           <div className="flex flex-col">
             <label htmlFor="priceRange">Price in ₱{priceRange}</label>
@@ -121,6 +128,7 @@ export default function Page() {
               onChange={(e) => {
                 setSortBy(e.target.value);
               }}
+              className="border border-gray-300 rounded-md p-4 mb-4"
             >
               <option value="asc">Low to High</option>
               <option value="desc">High to Low</option>

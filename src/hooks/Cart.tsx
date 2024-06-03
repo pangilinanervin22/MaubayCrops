@@ -65,6 +65,21 @@ export function useAddToCart(accountId: string) {
                 return { ok: false, message: "User does not exist" };
             }
 
+            const productRef = doc(firebaseDB, `/products/${product._id}`);
+            const productSnap = await getDoc(productRef);
+            if (!productSnap.exists()) {
+                toast("Product does not exist", { type: "error", toastId: product._id });
+                return;
+            }
+
+            console.log(productSnap.data().quantity, product.quantity);
+
+            if (productSnap.data().quantity < 1) {
+                await deleteDoc(doc(firebaseDB, `/accounts/${accountId}/cart/${product._id}`));
+                toast("Product is out of stock", { type: "warning", toastId: product._id });
+                return { ok: true, message: "Cart updated" };
+            }
+
             // check if product already exists in cart
             const querySnapshot = await getDocs(collection(firebaseDB, `/accounts/${accountId}/cart`));
             const existingProduct = querySnapshot.docs.find((doc) => doc.id === product._id);
@@ -106,10 +121,18 @@ export function useUpdateCart() {
             }
 
             const docRef = doc(firebaseDB, `/accounts/${accountId}/cart/${productId}`);
+            const product = productSnap.data();
             // if product quantity is less than input quantity, set cart item quantity to product quantity
-            if (productSnap.data().quantity < inputCartItemQuantity) {
+            if (product.quantity < inputCartItemQuantity) {
                 await setDoc(docRef, { cartItemQuantity: productSnap.data().quantity }, { merge: true });
                 toast("Quantity is set the only available stock", { type: "warning", toastId: productId });
+                return { ok: true, message: "Cart updated" };
+            }
+
+            // if product quantity is less than 1, remove it from cart
+            if (product.quantity < 1) {
+                await deleteDoc(doc(firebaseDB, `/accounts/${accountId}/cart/${product._id}`));
+                toast("Product is out of stock", { type: "warning", toastId: product._id });
                 return { ok: true, message: "Cart updated" };
             }
 
