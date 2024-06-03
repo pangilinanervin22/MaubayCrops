@@ -82,7 +82,7 @@ export default function Page() {
             />
           </section>
           <div className="flex flex-col">
-            <label htmlFor="priceRange">Price in P{priceRange}</label>
+            <label htmlFor="priceRange">Price in ₱{priceRange}</label>
             <input
               type="range"
               name="priceRange"
