@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-
 export default function Page() {
   const [email, setEmail] = useState("");
   const router = useRouter();
@@ -36,7 +35,7 @@ export default function Page() {
               setEmail(e.target.value);
             }}
           />
-          <button className="btn-green w-full p-3" type="submit">
+          <button className="btn-blue w-full p-3" type="submit">
             Reset Password
           </button>
           <button

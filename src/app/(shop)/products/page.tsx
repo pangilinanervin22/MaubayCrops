@@ -68,7 +68,7 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-extra-light-green">
       <section className="flex">
-        <aside className="bg-medium-green hidden md:block w-80 p-6 m-5 sticky top-0 rounded-md h-fit">
+        <aside className="bg-light-blue text-black hidden md:block w-80 p-6 m-5 sticky top-0 rounded-md h-fit">
           <section className="flex justify-between">
             <h1>Filters</h1>
 

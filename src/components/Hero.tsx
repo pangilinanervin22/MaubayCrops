@@ -13,7 +13,7 @@ const Hero: React.FC<HeroProps> = ({}) => {
           <h1 className="text-center text-dark-brown text-3xl font-bold lg:text-5xl ">
             One Stop Solution for your farming needs
           </h1>
-          <h2 className="text-center text-dark-blue text-2xl font-bold lg:text-4xl">
+          <h2 className="text-center text-blue-950 text-2xl font-bold lg:text-4xl">
             Buy Fertilizers, Insectisides, Seeds & other Agriculture Products
           </h2>
           <button

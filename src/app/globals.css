@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 @layer components {
-  .btn-green {
-    @apply bg-primary w-24 text-white font-bold p-1 rounded-md transition-colors duration-200 hover:bg-[#00704f];
+  .btn-blue {
+    @apply bg-blue-950 w-24 text-white font-bold p-1 rounded-md transition-colors duration-200 hover:bg-blue-800;
   }
 
   .btn-light {
-    @apply font-bold text-primary bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-extra-light-green;
+    @apply font-bold text-black bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-light-blue;
   }
 
   .input {

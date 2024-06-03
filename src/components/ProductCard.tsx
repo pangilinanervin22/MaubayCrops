@@ -78,7 +78,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         ) : (
           <button
-            className="mt-auto btn-green flex justify-center w-full py-2"
+            className="mt-auto btn-blue flex justify-center w-full py-2"
             onClick={() => {
               addToCart(product);
             }}

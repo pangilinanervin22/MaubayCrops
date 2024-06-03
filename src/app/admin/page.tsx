@@ -105,7 +105,7 @@ export default function Page() {
                         Forgot Password?
                     </h2> */}
 
-          <button className="btn-green w-full p-3" type="submit">
+          <button className="btn-blue w-full p-3" type="submit">
             LOGIN
           </button>
         </form>

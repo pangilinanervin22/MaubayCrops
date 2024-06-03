@@ -216,7 +216,7 @@ export default function Page() {
               <span className="text-red-700">*</span>
             </label>
           </div>
-          <button className="btn-green w-full p-3" type="submit">
+          <button className="btn-blue w-full p-3" type="submit">
             Create New Account
           </button>
           <button

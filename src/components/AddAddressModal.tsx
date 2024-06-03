@@ -195,7 +195,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
           />
         </div>
         <button
-          className="btn-green text-white py-2 px-4 rounded w-full mb-2"
+          className="btn-blue text-white py-2 px-4 rounded w-full mb-2"
           type="submit"
         >
           {editAddress ? "Save Changes" : "Save"}

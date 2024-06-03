@@ -49,7 +49,7 @@ export default function Page() {
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
       <section className="flex flex-col items-center justify-center mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h1 className="text-4xl font-bold mb-4 text-green-700">My Profile</h1>
+        <h1 className="text-4xl font-bold mb-4 text-blue-950">My Profile</h1>
         <Image
           className="rounded-[100%] h-40 w-40 object-cover mb-4 border-4"
           alt="Profile Image"
@@ -61,7 +61,7 @@ export default function Page() {
         />
         <section className="flex flex-wrap space-y-1">
           <button
-            className="btn-green w-full py-3"
+            className="btn-blue w-full py-3"
             onClick={() => {
               router.push("/cart");
             }}
@@ -80,7 +80,7 @@ export default function Page() {
       </section>
 
       <section className="flex flex-col items-start mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-4 text-green-700">
+        <h2 className="text-2xl font-semibold mb-4 text-blue-950">
           Contact Information
         </h2>
         <p className="text-gray-700 mb-2">
@@ -98,7 +98,7 @@ export default function Page() {
       </section>
 
       <section className="flex flex-col items-start mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-4 text-green-700">
+        <h2 className="text-2xl font-semibold mb-4 text-blue-950">
           Addresses
         </h2>
         {addressList.length > 0 && (
@@ -116,7 +116,7 @@ export default function Page() {
                       setShowAddAddressModal(true);
                     }}
                   >
-                    <IconPencil stroke={1} fill="green" color="white" />
+                    <IconPencil stroke={1} fill="indigo" color="white" />
                   </button>
                   <button
                     className="absolute top-2 right-8 text-gray-500 hover:text-gray-700"
@@ -170,14 +170,14 @@ export default function Page() {
           onClick={() => {
             setShowAddAddressModal(true);
           }}
-          className="btn-green px-3 py-1 w-40 mt-2"
+          className="btn-blue px-3 py-1 w-40 mt-2"
         >
           Add Address
         </button>
       </section>
 
       <section className="flex flex-col items-start bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-4 text-green-700">
+        <h2 className="text-2xl font-semibold mb-4 text-blue-950">
           Pending Orders
         </h2>
         <ul className="list-none list-inside text-gray-700">

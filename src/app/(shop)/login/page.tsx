@@ -114,7 +114,7 @@ export default function Page() {
             />
             <label htmlFor="rememberMe">Remember Me</label>
           </div>
-          <button className="btn-green w-full p-3" type="submit">
+          <button className="btn-blue w-full p-3" type="submit">
             LOGIN
           </button>
           <button

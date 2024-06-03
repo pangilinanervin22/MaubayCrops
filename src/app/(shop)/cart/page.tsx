@@ -100,7 +100,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
         </ul>
         {addresses.length > 0 && selectedAddressId ? (
           <button
-            className="btn-green text-white py-2 px-4 rounded w-full mb-2"
+            className="btn-blue text-white py-2 px-4 rounded w-full mb-2"
             onClick={() => {
               //TODO ORDER
               placeOrder(
@@ -113,7 +113,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
           </button>
         ) : null}
         <button
-          className="btn-green text-white py-2 px-4 rounded w-full mb-2"
+          className="btn-blue text-white py-2 px-4 rounded w-full mb-2"
           onClick={onAddAddress}
         >
           Add New Address
@@ -223,7 +223,7 @@ export default function Page() {
                 <span>Delivery Charge</span>
                 <span>₱{deliveryCharge}</span>
               </div>
-              <div className="flex justify-between mb-4 text-xl font-bold text-green-600">
+              <div className="flex justify-between mb-4 text-xl font-bold text-blue-950">
                 <span>Total Amount</span>
                 <span>₱{finalTotal}</span>
               </div>
@@ -231,7 +231,7 @@ export default function Page() {
                 FREE Home Delivery on orders above ₱1000
               </div>
               <button
-                className="btn-green text-white py-2 px-4 rounded w-full"
+                className="btn-blue text-white py-2 px-4 rounded w-full"
                 onClick={() => setShowAddressModal(true)}
               >
                 PROCEED TO CHECKOUT

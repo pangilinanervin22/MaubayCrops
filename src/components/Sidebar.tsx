@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { IconX } from "@tabler/icons-react";
 
-
 import { Brand } from "./Brand";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
@@ -27,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, sidebarToggler }) => {
         isVisible ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      <aside className="bg-extra-light-green w-64 h-full p-4 shadow-lg">
+      <aside className="bg-light-blue w-64 h-full p-4 shadow-lg">
         <section className="flex justify-between items-center mb-4">
           <Brand />
 
@@ -42,9 +41,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, sidebarToggler }) => {
               }}
             >
               Show All Products
-            </li>
-            <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
-              Search Products
             </li>
             <li
               className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50"
@@ -62,17 +58,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, sidebarToggler }) => {
             >
               {`Wishlist (${wishList.length})`}
             </li>
-            <li className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50">
+            <li
+              className="cursor-pointer p-2 rounded-md duration-500 transition-all hover:bg-green-50"
+              onClick={() => {
+                router.push("/profile");
+              }}
+            >
               Profile
             </li>
             <li className="mt-2">
               {isAuthenticated ? (
-                <button className="btn-green" onClick={logout}>
+                <button className="btn-blue" onClick={logout}>
                   Logout
                 </button>
               ) : (
                 <button
-                  className="btn-green"
+                  className="btn-blue"
                   onClick={() => {
                     router.push("/login");
                   }}
