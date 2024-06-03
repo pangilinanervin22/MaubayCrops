@@ -3,7 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuthenticated, useAccountGetAddressList, useModifyAccountAddress } from "@/hooks/Authentication";
+import {
+  useAuthenticated,
+  useAccountGetAddressList,
+  useModifyAccountAddress,
+} from "@/hooks/Authentication";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCheckout } from "@/components/ProductCheckout";
 import { Address } from "@/interfaces/Account";
@@ -29,6 +33,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onDeleteAddress,
   onEditAddress,
   onSelectAddress,
+
   selectedAddressId,
   accountId,
 }) => {
@@ -46,12 +51,14 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${showModal ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-300`}
+      className={`fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center ${
+        showModal ? "opacity-100" : "opacity-0"
+      } transition-opacity duration-300`}
     >
       <div
-        className={`bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${showModal ? "scale-100" : "scale-75"
-          } transition-transform duration-300`}
+        className={`bg-white p-4 rounded shadow-lg w-3/4 md:w-1/2 lg:w-1/3 transform ${
+          showModal ? "scale-100" : "scale-75"
+        } transition-transform duration-300`}
       >
         <h2 className="text-xl font-semibold mb-4">Select Delivery Address</h2>
         <ul className="mb-4">
@@ -96,7 +103,10 @@ const AddressModal: React.FC<AddressModalProps> = ({
             className="btn-green text-white py-2 px-4 rounded w-full mb-2"
             onClick={() => {
               //TODO ORDER
-              placeOrder(accountId, addresses.find((address) => address._id === selectedAddressId)!);
+              placeOrder(
+                accountId,
+                addresses.find((address) => address._id === selectedAddressId)!
+              );
             }}
           >
             Order Now
@@ -127,7 +137,7 @@ export default function Page() {
     accountId || "0"
   );
   const totalPrice = cartList.reduce((total, item) => {
-    return total + item.price * (item.cartItemQuantity);
+    return total + item.price * item.cartItemQuantity;
   }, 0);
   const deliveryCharge = totalPrice > 1000 ? 0 : 100;
   const finalTotal = totalPrice + deliveryCharge;
@@ -137,7 +147,8 @@ export default function Page() {
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [editAddress, setEditAddress] = useState<Address | null>(null);
   const { addressList } = useAccountGetAddressList(accountId || "0");
-  const { updateAccountAddress, deleteAccountAddress, addAccountAddress } = useModifyAccountAddress(accountId || "0");
+  const { updateAccountAddress, deleteAccountAddress, addAccountAddress } =
+    useModifyAccountAddress(accountId || "0");
 
   const handleAddAddress = (newAddress: Address) => {
     addAccountAddress(newAddress);
@@ -191,16 +202,17 @@ export default function Page() {
       <h1 className="text-center text-primary font-bold text-2xl md:text-4xl p-6">
         {cartList.length === 0 ? "Your Cart is Empty" : "Shopping Cart"}
       </h1>
-      <article className="flex flex-col items-center p-4">
-        <section className="flex flex-col bg-white p-4 shadow-md w-full md:w-2/3 lg:w-1/2">
-          {cartList.map((cartItem) => (
-            <ProductCheckout
-              key={cartItem._id}
-              product={cartItem}
-              quantity={cartItem.cartItemQuantity}
-            />
-          ))}
-          {cartList.length > 0 ? (
+      {cartList.length > 0 && (
+        <article className="flex flex-col items-center p-4">
+          <section className="flex flex-col bg-white p-4 shadow-md w-full md:w-2/3 lg:w-1/2">
+            {cartList.map((cartItem) => (
+              <ProductCheckout
+                key={cartItem._id}
+                product={cartItem}
+                quantity={cartItem.cartItemQuantity}
+              />
+            ))}
+
             <section className="bg-white p-4 shadow-md w-full mt-4">
               <h4 className="text-lg font-semibold mb-2">Price Details</h4>
               <div className="flex justify-between mb-2">
@@ -225,10 +237,9 @@ export default function Page() {
                 PROCEED TO CHECKOUT
               </button>
             </section>
-          ) : null}
-        </section>
-      </article>
-
+          </section>
+        </article>
+      )}
       {showAddressModal && (
         <AddressModal
           accountId={accountId || "0"}

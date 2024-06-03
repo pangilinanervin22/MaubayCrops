@@ -6,20 +6,33 @@ import { useState } from "react";
 
 import { Address } from "@/interfaces/Account";
 import { AddAddressModal } from "@/components/AddAddressModal";
-import { IconPencil } from "@tabler/icons-react";
-import { useAuthenticated, useAccountGetAddressList, useModifyAccountAddress } from "@/hooks/Authentication";
+import {
+  IconPencil,
+  IconTrash,
+  IconTrashFilled,
+  IconX,
+} from "@tabler/icons-react";
+
+import {
+  useAuthenticated,
+  useAccountGetAddressList,
+  useModifyAccountAddress,
+} from "@/hooks/Authentication";
 import { useGetAccountOrderList } from "@/hooks/Order";
 import formatDate from "@/components/Table/utils/formatDate";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export default function Page() {
-  const { accountId, accountData } = useAuthenticated();
+  const { accountId, accountData, isLoading } = useAuthenticated();
   const { addressList } = useAccountGetAddressList(accountId);
   const { orderList } = useGetAccountOrderList(accountId);
   const router = useRouter();
-  const { addAccountAddress, updateAccountAddress } = useModifyAccountAddress(accountId);
+  const { addAccountAddress, updateAccountAddress, deleteAccountAddress } =
+    useModifyAccountAddress(accountId);
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const [editAddress, setEditAddress] = useState<Address | null>(null);
 
+  console.log({ accountData });
   const handleAddAddress = (newAddress: Address) => {
     addAccountAddress(newAddress);
     setShowAddAddressModal(false);
@@ -30,6 +43,8 @@ export default function Page() {
     setShowAddAddressModal(false);
     setEditAddress(null);
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
@@ -69,10 +84,16 @@ export default function Page() {
           Contact Information
         </h2>
         <p className="text-gray-700 mb-2">
-          <strong>Email:</strong> {accountData!.email || "No email"}
+          <strong>Email:</strong> {accountData?.email || "No email"}
         </p>
         <p className="text-gray-700">
-          <strong>Phone:</strong> {addressList[0].phone || "No phone"}
+          {addressList.length === 0 ? (
+            "No address"
+          ) : (
+            <>
+              <strong>Phone:</strong> {addressList[0].phone || "No phone"}
+            </>
+          )}
         </p>
       </section>
 
@@ -80,55 +101,70 @@ export default function Page() {
         <h2 className="text-2xl font-semibold mb-4 text-green-700">
           Addresses
         </h2>
-
-        <ul className="list-none grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-gray-700 p-4">
-          {addressList.map((address, index) => (
-            <li
-              key={index}
-              className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm relative"
-            >
-              <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                onClick={() => {
-                  setEditAddress(address);
-                  setShowAddAddressModal(true);
-                }}
+        {addressList.length > 0 && (
+          <ul className="list-none grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-gray-700 p-4">
+            {addressList.map((address, index) => (
+              <li
+                key={index}
+                className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm relative"
               >
-                <IconPencil stroke={1} fill="green" color="white" />
-              </button>
-              <div className="mb-2">
-                <strong className="block text-sm font-medium text-gray-900">
-                  Name:
-                </strong>
-                <span className="text-sm text-gray-600">
-                  {address.receiverName}
-                </span>
-              </div>
-              <div className="mb-2">
-                <strong className="block text-sm font-medium text-gray-900">
-                  Phone:
-                </strong>
-                <span className="text-sm text-gray-600">{address.phone}</span>
-              </div>
-              <div className="mb-2">
-                <strong className="block text-sm font-medium text-gray-900">
-                  Address:
-                </strong>
-                <span className="text-sm text-gray-600">
-                  {address.province}, {address.city}, {address.barangay}
-                </span>
-              </div>
-              <div className="mb-2">
-                <strong className="block text-sm font-medium text-gray-900">
-                  Landmark:
-                </strong>
-                <span className="text-sm text-gray-600">
-                  {address.landmark}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+                <section className="flex">
+                  <button
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                    onClick={() => {
+                      setEditAddress(address);
+                      setShowAddAddressModal(true);
+                    }}
+                  >
+                    <IconPencil stroke={1} fill="green" color="white" />
+                  </button>
+                  <button
+                    className="absolute top-2 right-8 text-gray-500 hover:text-gray-700"
+                    onClick={() => {
+                      let willDelete = confirm(
+                        "Are you sure you want to delete this address?"
+                      );
+
+                      if (willDelete) deleteAccountAddress(address._id);
+                    }}
+                  >
+                    <IconX stroke={1} fill="red" color="red" />
+                  </button>
+                </section>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Name:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    {address.receiverName}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Phone:
+                  </strong>
+                  <span className="text-sm text-gray-600">{address.phone}</span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Address:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    {address.province}, {address.city}, {address.barangay}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Landmark:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    {address.landmark}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <button
           onClick={() => {
@@ -144,43 +180,44 @@ export default function Page() {
         <h2 className="text-2xl font-semibold mb-4 text-green-700">
           Pending Orders
         </h2>
-        <ul className="list-disc list-inside text-gray-700">
-          {
-            orderList.map((order, index) => (
-              <li key={index} className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm">
-                <div className="mb-2">
-                  <strong className="block text-sm font-medium text-gray-900">
-                    Order ID:
-                  </strong>
-                  <span className="text-sm text-gray-600">{order._id}</span>
-                </div>
-                <div className="mb-2">
-                  <strong className="block text-sm font-medium text-gray-900">
-                    Order Date:
-                  </strong>
-                  <span className="text-sm text-gray-600">
-                    {formatDate(order.orderDate as any)}
-                  </span>
-                </div>
-                <div className="mb-2">
-                  <strong className="block text-sm font-medium text-gray-900">
-                    Total Items:
-                  </strong>
-                  <span className="text-sm text-gray-600">
-                    {order.orderItems.length}
-                  </span>
-                </div>
-                <div className="mb-2">
-                  <strong className="block text-sm font-medium text-gray-900">
-                    Total Price:
-                  </strong>
-                  <span className="text-sm text-gray-600">
-                    ₱{order.orderTotal.toFixed(2)}
-                  </span>
-                </div>
-              </li>
-            ))
-          }
+        <ul className="list-none list-inside text-gray-700">
+          {orderList.map((order, index) => (
+            <li
+              key={index}
+              className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm"
+            >
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Order ID:
+                </strong>
+                <span className="text-sm text-gray-600">{order._id}</span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Order Date:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  {formatDate(order.orderDate as any)}
+                </span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Total Items:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  {order.orderItems.length}
+                </span>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-900">
+                  Total Price:
+                </strong>
+                <span className="text-sm text-gray-600">
+                  ₱{order.orderTotal.toFixed(2)}
+                </span>
+              </div>
+            </li>
+          ))}
         </ul>
       </section>
 

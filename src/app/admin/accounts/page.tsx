@@ -1,26 +1,30 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import MainTable, { TableStructure } from "@/components/Table/TableStructure";
 import { useGetAllAccounts } from "@/hooks/Authentication";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const content: TableStructure = {
-    id: "id",
-    title: "Accounts",
-    searchPath: "name",
-    structure: [
-        { label: "Name", path: "name", width: "400px", fontSize: "16px" },
-        { label: "email", path: "email", width: "200px", fontSize: "16px" },
-    ]
+  id: "id",
+  title: "Accounts",
+  searchPath: "name",
+  structure: [
+    { label: "Name", path: "name", width: "400px", fontSize: "16px" },
+    { label: "Email", path: "email", width: "200px", fontSize: "16px" },
+  ],
 };
 
 export default function Page() {
-    // const [currentProductId, setCurrentProductId] = useState<any>("");
-    const router = useRouter();
-    const { accounts } = useGetAllAccounts();
+  // const [currentProductId, setCurrentProductId] = useState<any>("");
+  const router = useRouter();
+  const { accounts, isLoading } = useGetAllAccounts();
 
-    return (
-        <>
-            {/* <Dialog onClose={() => { }} onOk={async () => {
+  if (isLoading) return <LoadingSpinner />;
+
+
+  return (
+    <>
+      {/* <Dialog onClose={() => { }} onOk={async () => {
                 const loading = toast("Deleting product...");
                 const res = await ProductDeleteAction(currentProductId)
 
@@ -36,27 +40,22 @@ export default function Page() {
                     <p>This will product will delete. You cannot undo this action.</p>
                 </div>
             </Dialog> */}
-            <MainTable
-                data={accounts}
-                isEditable={false}
-                structure={content}
-                handleUpdate={onHandleUpdate}
-                handleDelete={onHandleDelete}
-                handleAdd={onHandleAdd}
-            />
-        </>
-    );
+      <MainTable
+        data={accounts}
+        isEditable={false}
+        structure={content}
+        handleUpdate={onHandleUpdate}
+        handleDelete={onHandleDelete}
+      />
+    </>
+  );
 
-    function onHandleDelete(data: any) {
-        // setCurrentProductId(data.id);
-        router.push(`/admin/product?showDialog=y`);
-    }
+  function onHandleDelete(data: any) {
+    // setCurrentProductId(data.id);
+    router.push(`/admin/product?showDialog=y`);
+  }
 
-    function onHandleAdd() {
-        router.push("/admin/product/create");
-    }
-
-    function onHandleUpdate(data: any) {
-        router.push(`/admin/product/${data.id}`);
-    }
+  function onHandleUpdate(data: any) {
+    router.push(`/admin/product/${data.id}`);
+  }
 }

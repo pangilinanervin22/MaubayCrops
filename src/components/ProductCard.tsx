@@ -27,9 +27,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
 
   return (
-    <section
-      className=" h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md"
-    >
+    <section className=" h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md">
+      {/* ? RATING REMOVED */}
       {/* <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
         Best Seller
       </span> */}
@@ -53,10 +52,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
       />
       <section className="flex flex-col space-y-2 p-2">
         <span className="line-clamp-2">{product.title}</span>
-        <div className="flex space-x-2 rounded-sm bg-dark-green text-white w-fit p-2">
+        {/* <div className="flex space-x-2 rounded-sm bg-dark-green text-white w-fit p-2">
           <span>{`${product.rating}`}</span>
           <IconStar fill="white" />
-        </div>
+        </div> */}
 
         <h6>₱{product.price}</h6>
 
