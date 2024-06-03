@@ -51,7 +51,7 @@ export default function Page() {
     //   ? categories.has(product.categoryName.toLowerCase())
     //   : true;
     const isAvailable = hideOutOfStock
-      ? product.quantity <= 0
+      ? product.quantity > 0
       : true;
 
     return (
