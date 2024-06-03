@@ -17,7 +17,7 @@ export default function ToolTable({ searchValue, title, changeText, handleAdd, i
   return (
     <section className={styles.tool_table}>
       <div className={styles.search}>
-        <input type="text" placeholder="Search Name" title="name"
+        <input type="text" placeholder={"Search " + title} title="name"
           onChange={(event) => changeText(event.target.value)} value={searchValue} />
         <IconSearch_svg />
       </div>

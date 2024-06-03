@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { Order, OrderItem } from "@/interfaces/Account";
 import { Address } from "@/interfaces/Account";
 
-export function useGetOrderList(accountId: string) {
+export function useGetAccountOrderList(accountId: string) {
     const [orderList, setOrderList] = useState<OrderItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -17,8 +17,6 @@ export function useGetOrderList(accountId: string) {
                 const newOrderList = snapshot.docs.map((doc) => {
                     return {
                         ...doc.data(),
-                        _id: doc.id,
-                        orderItemQuantity: doc.data().orderItemQuantity,
                     } as OrderItem;
                 });
 
@@ -32,6 +30,54 @@ export function useGetOrderList(accountId: string) {
     }, [accountId]); // Depend on accountId so it reruns the effect when accountId changes
 
     return { orderList, isLoading };
+}
+
+export function useGetAllOrder() {
+    const [orders, setOrderList] = useState<OrderItem[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            collection(firebaseDB, `/accounts`),
+            async (snapshot) => {
+                // get all orders from all accounts
+                let allOrders: OrderItem[] = [];
+                for (let account of snapshot.docs) {
+                    const accountOrders = await getDocs(collection(firebaseDB, `/accounts/${account.id}/orders`));
+
+                    allOrders = allOrders.concat(
+                        accountOrders.docs.map((doc) => {
+                            return {
+                                ...doc.data(),
+                            } as OrderItem;
+                        })
+                    );
+                    console.log(account.data().name);
+                    console.log(accountOrders.docs.map((doc) => {
+                        return {
+                            ...doc.data(),
+                        } as OrderItem;
+
+
+                    }));
+
+
+                }
+
+                setOrderList(allOrders);
+                setIsLoading(false);
+
+
+
+
+            }
+        );
+
+        // Clean up the subscription on unmount
+        return () => unsubscribe();
+    }, []); // Depend on accountId so it reruns the effect when accountId changes
+
+    return { orders, isLoading };
 }
 
 export function usePlaceOrder() {

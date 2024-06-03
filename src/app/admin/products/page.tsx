@@ -2,38 +2,21 @@
 import { useRouter } from "next/navigation";
 import MainTable, { TableStructure } from "@/components/Table/TableStructure";
 import { useGetProducts } from "@/hooks/Products";
-import { useGetAllOrder } from "@/hooks/Order";
-import formatDate from "@/components/Table/utils/formatDate";
 
 const content: TableStructure = {
     id: "id",
-    title: "Order",
-    searchPath: "orderStatus",
+    title: "Product",
+    searchPath: "name",
     structure: [
-        { label: "Status", path: "orderStatus", width: "400px", fontSize: "16px" },
-        {
-            label: "Order Date", path: "orderAddress", width: "200px",
-            fontSize: "20px",
-            element: ((val) => <span>{formatDate(val["orderDate"])}</span>),
-        },
-        { label: "Price", path: "orderTotal", width: "200px", fontSize: "16px" },
-        {
-            label: "Receiver", path: "receiver", width: "160px", fontSize: "16px",
-            element: ((val) => <span>{val["orderAddress"]["receiverName"]}</span>),
-        },
-
-        {
-            label: "Total Items", path: "orderItems", width: "160px", fontSize: "16px",
-            element: ((val) => <span>{val["orderItems"].length}</span>),
-        },
+        { label: "Name", path: "title", width: "400px", fontSize: "16px" },
+        { label: "Price", path: "price", width: "200px", fontSize: "16px" },
     ]
 };
 
 export default function Page() {
     // const [currentProductId, setCurrentProductId] = useState<any>("");
     const router = useRouter();
-    const { orders } = useGetAllOrder();
-    console.log(orders);
+    const { products } = useGetProducts();
 
     return (
         <>
@@ -55,7 +38,7 @@ export default function Page() {
             </Dialog> */}
             <h1>2</h1>
             <MainTable
-                data={orders}
+                data={products}
                 isEditable={false}
                 structure={content}
                 handleUpdate={onHandleUpdate}
