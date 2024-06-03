@@ -8,10 +8,13 @@ import { Address } from "@/interfaces/Account";
 import { AddAddressModal } from "@/components/AddAddressModal";
 import { IconPencil } from "@tabler/icons-react";
 import { useAuthenticated, useAccountGetAddressList, useModifyAccountAddress } from "@/hooks/Authentication";
+import { useGetAccountOrderList } from "@/hooks/Order";
+import formatDate from "@/components/Table/utils/formatDate";
 
 export default function Page() {
   const { accountId } = useAuthenticated();
   const { addressList } = useAccountGetAddressList(accountId);
+  const { orderList } = useGetAccountOrderList(accountId);
   const router = useRouter();
   const { addAccountAddress, updateAccountAddress } = useModifyAccountAddress(accountId);
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
@@ -142,10 +145,42 @@ export default function Page() {
           Pending Orders
         </h2>
         <ul className="list-disc list-inside text-gray-700">
-          <li>Order #12345</li>
-          <li>Order #67890</li>
-          <li>Order #12345</li>
-          <li>Order #67890</li>
+          {
+            orderList.map((order, index) => (
+              <li key={index} className="mb-4 p-4 border border-gray-300 rounded-md shadow-sm">
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Order ID:
+                  </strong>
+                  <span className="text-sm text-gray-600">{order._id}</span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Order Date:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    {formatDate(order.orderDate as any)}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Total Items:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    {order.orderItems.length}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <strong className="block text-sm font-medium text-gray-900">
+                    Total Price:
+                  </strong>
+                  <span className="text-sm text-gray-600">
+                    ₱{order.orderTotal.toFixed(2)}
+                  </span>
+                </div>
+              </li>
+            ))
+          }
         </ul>
       </section>
 

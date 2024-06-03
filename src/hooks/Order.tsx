@@ -7,33 +7,33 @@ import { Order, OrderItem } from "@/interfaces/Account";
 import { Address } from "@/interfaces/Account";
 
 export function useGetAccountOrderList(accountId: string) {
-    const [orderList, setOrderList] = useState<OrderItem[]>([]);
+    const [orderList, setOrderList] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        if (!accountId) return;
         const unsubscribe = onSnapshot(
             collection(firebaseDB, `/accounts/${accountId}/orders`),
             async (snapshot) => {
                 const newOrderList = snapshot.docs.map((doc) => {
                     return {
                         ...doc.data(),
-                    } as OrderItem;
+                    };
                 });
 
-                setOrderList(newOrderList);
+                setOrderList(newOrderList as Order[]); // Convert OrderItem[] to Order[]
                 setIsLoading(false);
             }
         );
 
-        // Clean up the subscription on unmount
         return () => unsubscribe();
-    }, [accountId]); // Depend on accountId so it reruns the effect when accountId changes
+    }, [accountId]);
 
     return { orderList, isLoading };
 }
 
 export function useGetAllOrder() {
-    const [orders, setOrderList] = useState<OrderItem[]>([]);
+    const [orders, setOrderList] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -41,7 +41,7 @@ export function useGetAllOrder() {
             collection(firebaseDB, `/accounts`),
             async (snapshot) => {
                 // get all orders from all accounts
-                let allOrders: OrderItem[] = [];
+                let allOrders: Order[] = [];
                 for (let account of snapshot.docs) {
                     const accountOrders = await getDocs(collection(firebaseDB, `/accounts/${account.id}/orders`));
 
@@ -49,14 +49,14 @@ export function useGetAllOrder() {
                         accountOrders.docs.map((doc) => {
                             return {
                                 ...doc.data(),
-                            } as OrderItem;
+                            } as Order;
                         })
                     );
                     console.log(account.data().name);
                     console.log(accountOrders.docs.map((doc) => {
                         return {
                             ...doc.data(),
-                        } as OrderItem;
+                        } as Order;
 
 
                     }));
@@ -66,10 +66,6 @@ export function useGetAllOrder() {
 
                 setOrderList(allOrders);
                 setIsLoading(false);
-
-
-
-
             }
         );
 
