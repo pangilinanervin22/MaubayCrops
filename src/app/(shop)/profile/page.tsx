@@ -12,7 +12,7 @@ import { useGetAccountOrderList } from "@/hooks/Order";
 import formatDate from "@/components/Table/utils/formatDate";
 
 export default function Page() {
-  const { accountId } = useAuthenticated();
+  const { accountId, accountData } = useAuthenticated();
   const { addressList } = useAccountGetAddressList(accountId);
   const { orderList } = useGetAccountOrderList(accountId);
   const router = useRouter();
@@ -30,6 +30,9 @@ export default function Page() {
     setShowAddAddressModal(false);
     setEditAddress(null);
   };
+
+  console.log(accountData);
+
 
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
@@ -69,10 +72,10 @@ export default function Page() {
           Contact Information
         </h2>
         <p className="text-gray-700 mb-2">
-          <strong>Email:</strong> myemail@example.com
+          <strong>Email:</strong> {accountData!.email || "No email"}
         </p>
         <p className="text-gray-700">
-          <strong>Phone:</strong> (123) 456-7890
+          <strong>Phone:</strong> {addressList[0].phone || "No phone"}
         </p>
       </section>
 
