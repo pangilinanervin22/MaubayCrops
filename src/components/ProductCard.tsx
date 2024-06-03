@@ -24,10 +24,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { addWishList } = useAddWishList(accountId || "");
   const { addToCart } = useAddToCart(accountId || "");
+  const isOutOfStock = product.quantity === 0;
   const router = useRouter();
 
   return (
-    <section className=" h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md">
+    <section
+      className={`h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md ${
+        isOutOfStock && "brightness-50"
+      }`}
+    >
       {/* ? RATING REMOVED */}
       {/* <span className="absolute text-white bg-green-900 p-2 rounded-md mt-5 ml-5 bg-opacity-65">
         Best Seller
