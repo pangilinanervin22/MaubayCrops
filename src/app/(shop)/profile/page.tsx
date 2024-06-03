@@ -31,9 +31,6 @@ export default function Page() {
     setEditAddress(null);
   };
 
-  console.log(accountData);
-
-
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
       <section className="flex flex-col items-center justify-center mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
