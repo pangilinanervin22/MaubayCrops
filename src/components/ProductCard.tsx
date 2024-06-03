@@ -79,6 +79,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         ) : (
           <button
             className="mt-auto btn-blue flex justify-center w-full py-2"
+            disabled={isOutOfStock}
             onClick={() => {
               addToCart(product);
             }}
