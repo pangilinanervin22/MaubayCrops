@@ -96,27 +96,19 @@ export default function Page() {
                         />
                     </div>
 
-                    <h2
+                    {/* <h2
                         className="underline font-bold text-primary cursor-pointer"
                         onClick={() => {
                             router.push("/forgot-password");
                         }}
                     >
                         Forgot Password?
-                    </h2>
+                    </h2> */}
 
                     <button className="btn-green w-full p-3" type="submit">
                         LOGIN
                     </button>
-                    <button
-                        className="font-bold text-primary bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-extra-light-green"
-                        onClick={() => {
-                            router.push("/register");
-                        }}
-                        type="button"
-                    >
-                        Create New Account &gt;
-                    </button>
+
                 </form>
             </article>
         </main>

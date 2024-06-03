@@ -8,7 +8,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { isAdmin, isLoading, logout } = useAuthenticated();
+    const { isAdmin, isLoading, logout, isAuthenticated } = useAuthenticated();
     const router = useRouter();
 
 
@@ -17,10 +17,13 @@ export default function RootLayout({
 
     return (
         <>
-            <h1>admin</h1>
-            <button onClick={() => router.push('/admin/orders')}>Orders</button>
-            <button onClick={() => router.push('/admin/accounts')}>Accounts</button>
-            {isAdmin && <button onClick={logout}>Logout</button>}
+            {isAuthenticated && isAdmin &&
+                <nav>
+                    <h1>admin</h1>
+                    <button onClick={() => router.push('/admin/orders')}>Orders</button>
+                    <button onClick={() => router.push('/admin/accounts')}>Accounts</button>
+                    {isAdmin && <button onClick={logout}>Logout</button>}
+                </nav>}
             {children}
         </>
     );
