@@ -35,7 +35,6 @@ export default function Page() {
         setHideOutOfStock(e.target.checked);
         break;
     }
-
   };
 
   const clearFilters = () => {
@@ -45,29 +44,26 @@ export default function Page() {
     setHideOutOfStock(false);
   };
 
-  let filteredProducts = structuredClone(products.filter((product) => {
-    const price = product.price;
-    // const hasCategory = categories.size
-    //   ? categories.has(product.categoryName.toLowerCase())
-    //   : true;
-    const isAvailable = hideOutOfStock
-      ? product.quantity > 0
-      : true;
+  let filteredProducts = structuredClone(
+    products
+      .filter((product) => {
+        const price = product.price;
+        const isAvailable = hideOutOfStock ? product.quantity > 0 : true;
 
-    return (
-      price <= parseInt(priceRange) &&
-      // hasCategory &&
-      isAvailable
-    );
-  }).sort((a, b) => {
-    if (sortBy === "asc") {
-      return a.price - b.price;
-    } else if (sortBy === "desc") {
-      return b.price - a.price;
-    } else {
-      return 0;
-    }
-  }));
+        return price <= parseInt(priceRange) && isAvailable;
+      })
+      .sort((a, b) => {
+        if (sortBy === "asc") {
+          return a.price - b.price;
+        } else if (sortBy === "desc") {
+          return b.price - a.price;
+        } else {
+          return 0;
+        }
+      })
+  );
+
+  console.log(filteredProducts);
 
   return (
     <main className="min-h-screen bg-extra-light-green">
