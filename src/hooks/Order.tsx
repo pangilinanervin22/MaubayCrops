@@ -100,7 +100,9 @@ export function usePlaceOrder() {
                     const newQuantity = productSnap.data().quantity - cartItem.data().cartItemQuantity;
 
                     if (newQuantity < 0 || cartItem.data().cartItemQuantity > productSnap.data().quantity) {
-                        toast.error("Not enough stock for product " + productSnap.data().name);
+                        console.log(productSnap.data());
+
+                        toast.error("No enough stock for " + productSnap.data().title);
                         return { ok: false, message: "Not enough stock" };
                     }
 
