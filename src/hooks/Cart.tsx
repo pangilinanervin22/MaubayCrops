@@ -64,7 +64,7 @@ export function useAddToCart(accountId: string) {
   const addToCart = async (product: Product) => {
     try {
       if (!accountId) {
-        toast.error("User not login");
+        toast.error("Please login first.");
         return { ok: false, message: "User does not exist" };
       }
 
