@@ -47,7 +47,6 @@ export default function Page() {
       if (res.success === true) toast.success(res.message);
       else toast.error(res.message);
     } catch (error) {
-      console.log(error);
       toast.error("Something went wrong. Please try again.");
     }
   };

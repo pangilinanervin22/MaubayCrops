@@ -28,7 +28,6 @@ export default function Page() {
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const [editAddress, setEditAddress] = useState<Address | null>(null);
 
-  console.log({ accountData });
   const handleAddAddress = (newAddress: Address) => {
     addAccountAddress(newAddress);
     setShowAddAddressModal(false);

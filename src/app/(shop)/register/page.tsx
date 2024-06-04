@@ -159,7 +159,6 @@ export default function Page() {
             required
             value={userType}
             onChange={(e) => {
-              console.log(e.target.value);
               setUserType(e.target.value);
             }}
           >

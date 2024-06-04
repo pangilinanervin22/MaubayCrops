@@ -14,9 +14,6 @@ export default function Page() {
   const { wishList } = useGetWishListProduct(accountId || "0");
   const { cartList } = useGetCartList(accountId || "0");
 
-  console.log(wishList, accountId);
-  console.log(wishList[0]);
-
   if (!isAuthenticated && !isLoading) {
     router.push("/login");
   }

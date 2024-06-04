@@ -193,9 +193,6 @@ export default function Page() {
 
   const handleEditAddress = (newDetails: Address, id?: string) => {
     const addressToEdit = addressList.find((address) => address._id === id);
-    console.log(addressList);
-    console.log("addressToEdit", addressToEdit);
-    console.log("newDetails", newDetails);
 
     if (addressToEdit) {
       setEditAddress(addressToEdit);
