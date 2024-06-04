@@ -2,7 +2,6 @@
 
 import {
   IconMenu2,
-  IconSearch,
   IconHeart,
   IconShoppingCart,
   IconUserCircle,

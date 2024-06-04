@@ -1,8 +1,10 @@
 "use client";
+
 import { useRouter } from "next/navigation";
+
+import formatDate from "@/components/Table/utils/formatDate";
 import MainTable, { TableStructure } from "@/components/Table/TableStructure";
 import { useGetAllOrder } from "@/hooks/Order";
-import formatDate from "@/components/Table/utils/formatDate";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const content: TableStructure = {
@@ -71,14 +73,9 @@ export default function Page() {
     </>
   );
 
-  function onHandleDelete(data: any) {
-    // setCurrentProductId(data.id);
-    router.push(`/admin/product?showDialog=y`);
-  }
+  function onHandleDelete(data: any) {}
 
-  function onHandleAdd() {
-    router.push("/admin/product/create");
-  }
+  function onHandleAdd() {}
 
   function onHandleUpdate(data: any) {
     router.push(`/admin/product/${data.id}`);

@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+
 import { useAuthenticated, useLogin } from "@/hooks/Authentication";
 import { ShowPassword } from "@/components/ShowPassword";
 
 export default function Page() {
   const router = useRouter();
-  const { auth, isAuthenticated } = useAuthenticated();
+  const { isAuthenticated } = useAuthenticated();
   const { login } = useLogin();
 
   const [email, setEmail] = useState("");
@@ -97,7 +98,7 @@ export default function Page() {
           </div>
 
           <h2
-            className="underline font-bold text-primary cursor-pointer"
+            className="underline font-bold text-blue-950 cursor-pointer"
             onClick={() => {
               router.push("/forgot-password");
             }}

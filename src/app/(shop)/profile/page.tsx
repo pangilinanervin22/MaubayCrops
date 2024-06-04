@@ -3,27 +3,23 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { IconPencil, IconX } from "@tabler/icons-react";
 
-import { Address } from "@/interfaces/Account";
-import { AddAddressModal } from "@/components/AddAddressModal";
-import {
-  IconPencil,
-  IconTrash,
-  IconTrashFilled,
-  IconX,
-} from "@tabler/icons-react";
 
+import formatDate from "@/components/Table/utils/formatDate";
 import {
   useAuthenticated,
   useAccountGetAddressList,
   useModifyAccountAddress,
 } from "@/hooks/Authentication";
 import { useGetAccountOrderList } from "@/hooks/Order";
-import formatDate from "@/components/Table/utils/formatDate";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Address } from "@/interfaces/Account";
+import { AddAddressModal } from "@/components/AddAddressModal";
 
 export default function Page() {
-  const { accountId, accountData, isLoading } = useAuthenticated();
+  const { accountId, accountData, isLoading, isAuthenticated } =
+    useAuthenticated();
   const { addressList } = useAccountGetAddressList(accountId);
   const { orderList } = useGetAccountOrderList(accountId);
   const router = useRouter();
@@ -43,6 +39,10 @@ export default function Page() {
     setShowAddAddressModal(false);
     setEditAddress(null);
   };
+
+  if (!isAuthenticated) {
+    router.push("/login");
+  }
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -98,9 +98,7 @@ export default function Page() {
       </section>
 
       <section className="flex flex-col items-start mb-8 bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-4 text-blue-950">
-          Addresses
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4 text-blue-950">Addresses</h2>
         {addressList.length > 0 && (
           <ul className="list-none grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-gray-700 p-4">
             {addressList.map((address, index) => (
@@ -180,7 +178,7 @@ export default function Page() {
         <h2 className="text-2xl font-semibold mb-4 text-blue-950">
           Pending Orders
         </h2>
-        <ul className="list-none list-inside text-gray-700">
+        <ul className="list-none list-inside w-full grid grid-cols-1 place-items-center md:grid-cols-2 lg:grid-cols-3 gap-3 text-gray-700">
           {orderList.map((order, index) => (
             <li
               key={index}

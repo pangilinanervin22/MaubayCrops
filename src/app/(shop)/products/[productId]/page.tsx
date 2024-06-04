@@ -42,14 +42,14 @@ export default function Page({ params }: { params: { productId: string } }) {
       </div>
       <div className="w-full max-w-7xl mt-6 bg-white p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-gray-800">{product.title}</h1>
-        <div className="text-lg bg-dark-green text-white w-fit py-1 px-2  rounded-sm mt-2">
+        {/* <div className="text-lg bg-dark-green text-white w-fit py-1 px-2  rounded-sm mt-2">
           {product.rating} ★
-        </div>
+        </div> */}
         <div className="text-gray-600 mt-2">
           Category: {product.categoryName}
         </div>
         <div className="flex items-center mt-4">
-          <span className="text-2xl font-bold text-green-700">
+          <span className="text-2xl font-bold text-blue-950">
             ₱{product.price}
           </span>
         </div>
@@ -68,7 +68,7 @@ export default function Page({ params }: { params: { productId: string } }) {
             </button>
           ) : (
             <button
-              className="flex w-full font-bold bg-green-700 text-white min-w-fit flex-1 justify-center items-center md:max-w-10 p-2 md:px-4 md:py-2 rounded gap-1 transition-colors duration-200 hover:bg-extra-light-green hover:text-black"
+              className="flex w-full font-bold btn-blue min-w-fit flex-1 justify-center items-center md:max-w-10 p-2 md:px-4 md:py-2 rounded gap-1"
               onClick={() => {
                 addToCart(product);
               }}
@@ -80,7 +80,7 @@ export default function Page({ params }: { params: { productId: string } }) {
             </button>
           )}
           <button
-            className="text-primary border-black min-w-fit flex-1 border-2 justify-center items-center md:max-w-10 p-2 md:px-4 md:py-2 flex gap-1 rounded-md transition-colors duration-200 hover:bg-extra-light-green"
+            className="btn-light border-black min-w-fit flex-1 border-2 justify-center items-center md:max-w-10 p-2 md:px-4 md:py-2 flex gap-1 rounded-md"
             onClick={() => {
               addWishList(product);
             }}

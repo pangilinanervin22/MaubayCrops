@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useGetProducts } from "@/hooks/Products";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
-import { useAddToCart, useGetCartList } from "@/hooks/Cart";
+import { useGetCartList } from "@/hooks/Cart";
 import { ProductCard } from "@/components/ProductCard";
 
 export default function Page() {
@@ -38,6 +38,7 @@ export default function Page() {
     }
   };
 
+  // ? might need for later
   const clearFilters = () => {
     setPriceRange("1500");
     // setCategories(new Set());
@@ -64,6 +65,16 @@ export default function Page() {
         }
       })
   );
+
+  if (products.length === 0) {
+    return (
+      <main className="min-h-screen bg-extra-light-green">
+        <section className="flex justify-center items-center h-screen">
+          <h1 className="text-2xl">No Products yet.</h1>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-extra-light-green">

@@ -2,15 +2,27 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { toast } from "react-toastify";
+
+import { useAuthenticated } from "@/hooks/Authentication";
 
 export default function Page() {
+  const { auth } = useAuthenticated();
   const [email, setEmail] = useState("");
   const router = useRouter();
 
   const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Implement reset password logic here
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success("Password reset email sent");
+        router.push("/login");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (

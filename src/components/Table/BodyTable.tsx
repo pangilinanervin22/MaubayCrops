@@ -44,7 +44,7 @@ export default function BodyTable({
           <h1>{"No data"}</h1>
         ) : (
           data.map((currentData) => (
-            <tr key={currentData[tableProps.id]}>
+            <tr key={currentData.uid ?? currentData._id}>
               {tableProps.structure.map((currentColumn: Column) => (
                 <td
                   key={currentColumn.label}

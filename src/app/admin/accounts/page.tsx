@@ -1,5 +1,7 @@
 "use client";
+
 import { useRouter } from "next/navigation";
+
 import MainTable, { TableStructure } from "@/components/Table/TableStructure";
 import { useGetAllAccounts } from "@/hooks/Authentication";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -20,7 +22,6 @@ export default function Page() {
   const { accounts, isLoading } = useGetAllAccounts();
 
   if (isLoading) return <LoadingSpinner />;
-
 
   return (
     <>
@@ -50,10 +51,7 @@ export default function Page() {
     </>
   );
 
-  function onHandleDelete(data: any) {
-    // setCurrentProductId(data.id);
-    router.push(`/admin/product?showDialog=y`);
-  }
+  function onHandleDelete(data: any) {}
 
   function onHandleUpdate(data: any) {
     router.push(`/admin/product/${data.id}`);

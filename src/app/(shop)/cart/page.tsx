@@ -22,6 +22,7 @@ interface AddressModalProps {
   onDeleteAddress: (id?: string) => void;
   onEditAddress: (newAddress: Address, id?: string) => void;
   onSelectAddress: (id?: string) => void;
+  onSuccessOrder: () => void;
   selectedAddressId: string | null;
   accountId: string;
 }
@@ -33,7 +34,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onDeleteAddress,
   onEditAddress,
   onSelectAddress,
-
+  onSuccessOrder,
   selectedAddressId,
   accountId,
 }) => {
@@ -68,18 +69,33 @@ const AddressModal: React.FC<AddressModalProps> = ({
               className="border p-2 mb-2 flex justify-between"
             >
               <div>
-                <input
-                  type="radio"
-                  name="address"
-                  checked={selectedAddressId === address._id}
-                  onChange={() => onSelectAddress(address._id)}
-                />
-                <span>{address.receiverName}</span>
-                <p>{address.phone}</p>
-                <p>{address.province}</p>
-                <p>{address.city}</p>
-                <p>{address.barangay}</p>
-                <p>{address.landmark}</p>
+                <div className="flex gap-1">
+                  <input
+                    id="address"
+                    type="radio"
+                    name="address"
+                    checked={selectedAddressId === address._id}
+                    onChange={() => onSelectAddress(address._id)}
+                  />
+                  <label className="block" htmlFor="address">
+                    {address.receiverName}
+                  </label>
+                </div>
+                <label className="block" htmlFor="address">
+                  {address.phone}
+                </label>
+                <label className="block" htmlFor="address">
+                  {address.province}
+                </label>
+                <label className="block" htmlFor="address">
+                  {address.city}
+                </label>
+                <label className="block" htmlFor="address">
+                  {address.barangay}
+                </label>
+                <label className="block" htmlFor="address">
+                  {address.landmark}
+                </label>
               </div>
               <div className="flex items-center">
                 <button
@@ -102,11 +118,20 @@ const AddressModal: React.FC<AddressModalProps> = ({
           <button
             className="btn-blue text-white py-2 px-4 rounded w-full mb-2"
             onClick={() => {
-              //TODO ORDER
-              placeOrder(
-                accountId,
-                addresses.find((address) => address._id === selectedAddressId)!
+              let willOrder = confirm(
+                "Are you sure you want to place the order?"
               );
+
+              if (willOrder) {
+                placeOrder(
+                  accountId,
+                  addresses.find(
+                    (address) => address._id === selectedAddressId
+                  )!
+                );
+
+                onSuccessOrder();
+              }
             }}
           >
             Order Now
@@ -157,7 +182,13 @@ export default function Page() {
   };
 
   const handleDeleteAddress = (id?: string) => {
-    deleteAccountAddress(id!);
+    let willDelete = confirm("Are you sure you want to delete this address?");
+
+    if (willDelete) {
+      selectedAddressId === id && setSelectedAddressId("");
+
+      deleteAccountAddress(id!);
+    }
   };
 
   const handleEditAddress = (newDetails: Address, id?: string) => {
@@ -187,6 +218,7 @@ export default function Page() {
   const handleBack = () => {
     setShowAddAddressModal(false);
     setShowAddressModal(true);
+    setEditAddress(null);
   };
 
   if (!isAuthenticated && !isAuthLoading) {
@@ -240,6 +272,7 @@ export default function Page() {
           </section>
         </article>
       )}
+
       {showAddressModal && (
         <AddressModal
           accountId={accountId || "0"}
@@ -252,6 +285,10 @@ export default function Page() {
           onDeleteAddress={handleDeleteAddress}
           onEditAddress={handleEditAddress}
           onSelectAddress={handleSelectAddress}
+          onSuccessOrder={() => {
+            setShowAddressModal(false);
+            setSelectedAddressId("");
+          }}
           selectedAddressId={selectedAddressId}
         />
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { IconHeart, IconStar, IconShoppingCart } from "@tabler/icons-react";
+import { IconHeart, IconShoppingCart } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 import { IProduct } from "../interfaces/Product";

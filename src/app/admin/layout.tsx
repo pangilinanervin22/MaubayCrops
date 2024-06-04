@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { IconMenu2, IconBuildingStore, IconUsers } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import { Brand } from "@/components/Brand";
 import { Sidebar } from "@/components/Sidebar";

@@ -6,6 +6,7 @@ interface FeaturedProps {}
 
 const Featured: React.FC<FeaturedProps> = ({}) => {
   const router = useRouter();
+  
   return (
     <section className="min-h-full p-6 bg-extra-light-green">
       <h3 className="text-3xl text-center font-bold mb-5">
