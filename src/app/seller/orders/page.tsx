@@ -2,23 +2,50 @@
 
 import { useRouter } from "next/navigation";
 
+import formatDate from "@/components/Table/utils/formatDate";
 import MainTable, { TableStructure } from "@/components/Table/TableStructure";
-import { useGetProducts } from "@/hooks/Products";
+import { useGetOrdersBySeller } from "@/hooks/Order";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { useAuthenticated } from "@/hooks/Authentication";
 
 const content: TableStructure = {
   id: "id",
-  title: "Product",
-  searchPath: "name",
+  title: "Order",
+  searchPath: "orderStatus",
   structure: [
-    { label: "Name", path: "title", width: "400px", fontSize: "16px" },
-    { label: "Price", path: "price", width: "200px", fontSize: "16px" },
+    { label: "Status", path: "orderStatus", width: "400px", fontSize: "16px" },
+    {
+      label: "Order Date",
+      path: "orderAddress",
+      width: "200px",
+      fontSize: "20px",
+      element: (val) => <span>{formatDate(val["orderDate"])}</span>,
+    },
+    { label: "Price", path: "orderTotal", width: "200px", fontSize: "16px" },
+    {
+      label: "Receiver",
+      path: "receiver",
+      width: "160px",
+      fontSize: "16px",
+      element: (val) => <span>{val["orderAddress"]["receiverName"]}</span>,
+    },
+
+    {
+      label: "Total Items",
+      path: "orderItems",
+      width: "160px",
+      fontSize: "16px",
+      element: (val) => <span>{val["orderItems"].length}</span>,
+    },
   ],
 };
 
 export default function Page() {
-  // const [currentProductId, setCurrentProductId] = useState<any>("");
   const router = useRouter();
-  const { products } = useGetProducts();
+  const { accountId } = useAuthenticated();
+  const { isLoading, orders } = useGetOrdersBySeller(accountId || "0");
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <>
@@ -39,7 +66,7 @@ export default function Page() {
                 </div>
             </Dialog> */}
       <MainTable
-        data={products}
+        data={orders}
         isEditable={false}
         structure={content}
         handleUpdate={onHandleUpdate}
@@ -53,6 +80,6 @@ export default function Page() {
   function onHandleAdd() {}
 
   function onHandleUpdate(data: any) {
-    router.push(`/admin/product/${data.id}`);
+    // router.push(`/admin/product/${data.id}`);
   }
 }

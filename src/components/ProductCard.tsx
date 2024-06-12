@@ -4,13 +4,13 @@ import Image from "next/image";
 import { IconHeart, IconShoppingCart } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
-import { IProduct } from "../interfaces/Product";
+import { Product } from "../interfaces/Product";
 import { useAddWishList } from "@/hooks/WishList";
 import { useAddToCart } from "@/hooks/Cart";
 
 interface ProductCardProps {
   key: string;
-  product: IProduct;
+  product: Product;
   accountId: string;
   isWishList: boolean;
   isCart: boolean;
@@ -29,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <section
-      className={`h-fit relative bg-white transition-transform hover:-translate-y-2 rounded-md ${
+      className={`h-auto w-60 relative bg-white transition-transform hover:-translate-y-2 rounded-md mb-4 ${
         isOutOfStock && "brightness-50"
       }`}
     >
@@ -46,22 +46,26 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <IconHeart color="red" fill={isWishList ? "red" : "transparent"} />
       </button>
       <Image
-        className="rounded-t-md h-60 w-full object-cover cursor-pointer"
+        className="rounded-t-md object-cover cursor-pointer"
         src={product.imgUrl}
         alt="product image"
-        width={200}
-        height={200}
+        width={240}
+        height={240}
+        style={{ width: "100%", height: "15rem" }}
         onClick={() => {
           router.push(`/products/${product._id}`);
         }}
       />
       <section className="flex flex-col space-y-2 p-2">
         <span className="line-clamp-2">{product.title}</span>
-        {/* <div className="flex space-x-2 rounded-sm bg-dark-green text-white w-fit p-2">
-          <span>{`${product.rating}`}</span>
-          <IconStar fill="white" />
-        </div> */}
-
+        <span className="line-clamp-2">
+          <span className="text-blue-950 font-bold">Seller:</span>{" "}
+          {product.sellerName}
+        </span>
+        <span className="line-clamp-2">
+          <span className="text-blue-950 font-bold">Stock:</span>{" "}
+          {product.quantity}
+        </span>
         <h6>₱{product.price}</h6>
 
         {isCart ? (

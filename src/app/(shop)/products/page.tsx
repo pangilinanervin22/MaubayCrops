@@ -1,10 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+
 import { useGetProducts } from "@/hooks/Products";
 import { useAuthenticated } from "@/hooks/Authentication";
 import { useGetWishListProduct } from "@/hooks/WishList";
 import { useGetCartList } from "@/hooks/Cart";
 import { ProductCard } from "@/components/ProductCard";
+import { Product } from "@/interfaces/Product";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export default function Page() {
   const { accountId } = useAuthenticated();
@@ -13,7 +16,6 @@ export default function Page() {
   const { products, isLoading } = useGetProducts();
   const [priceRange, setPriceRange] = useState("1500");
   // const [categories, setCategories] = useState(new Set());
-  const [rating, setRating] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
   const [search, setSearch] = useState("");
@@ -46,25 +48,37 @@ export default function Page() {
     setHideOutOfStock(false);
   };
 
-  let filteredProducts = structuredClone(
-    products
-      .filter((product) => {
-        const price = product.price;
-        const isAvailable = hideOutOfStock ? product.quantity > 0 : true;
-        const isSearchMatch = product.title.toLowerCase().includes(search);
+  const filteredProducts = useMemo(() => {
+    return JSON.parse(
+      JSON.stringify(
+        products
+          .filter((product) => {
+            const price = product.price;
+            const isAvailable = hideOutOfStock ? product.quantity > 0 : true;
+            const isSearchMatch = product.title
+              .toLowerCase()
+              .includes(search.toLowerCase());
 
-        return price <= parseInt(priceRange) && isAvailable && isSearchMatch;
-      })
-      .sort((a, b) => {
-        if (sortBy === "asc") {
-          return a.price - b.price;
-        } else if (sortBy === "desc") {
-          return b.price - a.price;
-        } else {
-          return 0;
-        }
-      })
-  );
+            return (
+              price <= parseInt(priceRange) && isAvailable && isSearchMatch
+            );
+          })
+          .sort((a, b) => {
+            if (sortBy === "asc") {
+              return a.price - b.price;
+            } else if (sortBy === "desc") {
+              return b.price - a.price;
+            } else {
+              return 0;
+            }
+          })
+      )
+    );
+  }, [products, priceRange, hideOutOfStock, search, sortBy]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (products.length === 0) {
     return (
@@ -161,8 +175,8 @@ export default function Page() {
             </ul>
           </section>
         </aside>
-        <section className="w-full p-2 grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {filteredProducts.map((product) => {
+        <section className="w-full p-2 grid place-items-center grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+          {filteredProducts.map((product: Product) => {
             const isWishList = wishList.some(
               (wish) => wish._id === product._id
             );

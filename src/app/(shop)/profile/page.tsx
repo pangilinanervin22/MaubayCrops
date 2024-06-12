@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IconPencil, IconX } from "@tabler/icons-react";
 
-
 import formatDate from "@/components/Table/utils/formatDate";
 import {
   useAuthenticated,
@@ -39,11 +38,11 @@ export default function Page() {
     setEditAddress(null);
   };
 
-  if (!isAuthenticated) {
+  if (isLoading) return <LoadingSpinner />;
+
+  if (!isLoading && !isAuthenticated) {
     router.push("/login");
   }
-
-  if (isLoading) return <LoadingSpinner />;
 
   return (
     <main className="min-h-screen flex flex-col items-center bg-extra-light-green p-6">
