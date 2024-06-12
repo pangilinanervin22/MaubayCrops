@@ -15,7 +15,6 @@ export default function Page() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +24,6 @@ export default function Page() {
         break;
       case "password":
         setPassword(e.target.value);
-        break;
-      case "rememberMe":
-        setRememberMe(e.target.checked);
         break;
       default:
         break;
@@ -45,8 +41,9 @@ export default function Page() {
 
       const res = await login(email, password);
 
-      if (res.success === true) toast.success(res.message);
-      else toast.error(res.message);
+      if (res.success === true) {
+        toast.success(res.message);
+      } else toast.error(res.message);
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     }
@@ -113,16 +110,6 @@ export default function Page() {
           >
             Forgot Password?
           </h2>
-          <div className="flex gap-1">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              name="rememberMe"
-              checked={rememberMe}
-              onChange={handleFormChange}
-            />
-            <label htmlFor="rememberMe">Remember Me</label>
-          </div>
           <button className="btn-blue w-full p-3" type="submit">
             LOGIN
           </button>

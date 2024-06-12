@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   useAddSellerProduct,
   useDeleteProduct,
   useGetProducts,
+  useGetSellerProducts,
 } from "@/hooks/Products";
 
 import { useState } from "react";
@@ -11,9 +13,12 @@ import { Product } from "@/interfaces/Product";
 import { SellerProductCard } from "@/components/SellerProductCard";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { AddProductModal } from "@/components/AddProductModal";
+import { useAuthenticated } from "@/hooks/Authentication";
 
 export default function Page() {
-  const { products, isLoading } = useGetProducts();
+  const router = useRouter();
+  const { isSeller, isAuthenticated, accountId } = useAuthenticated();
+  const { products, isLoading } = useGetSellerProducts(accountId || "0");
   const { deleteProduct } = useDeleteProduct();
   const { addSellerProduct, deleteImage, updateSellerProduct } =
     useAddSellerProduct();
@@ -22,6 +27,14 @@ export default function Page() {
 
   if (isLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!isAuthenticated) {
+    router.push("/login");
+  }
+
+  if (isAuthenticated && !isSeller) {
+    router.push("/");
   }
 
   return (

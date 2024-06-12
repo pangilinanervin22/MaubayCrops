@@ -42,10 +42,18 @@ const content: TableStructure = {
 
 export default function Page() {
   const router = useRouter();
-  const { accountId } = useAuthenticated();
+  const { accountId, isAuthenticated, isSeller } = useAuthenticated();
   const { isLoading, orders } = useGetOrdersBySeller(accountId || "0");
 
   if (isLoading) return <LoadingSpinner />;
+
+  if (!isAuthenticated) {
+    router.push("/login");
+  }
+
+  if (isAuthenticated && !isSeller) {
+    router.push("/");
+  }
 
   return (
     <>

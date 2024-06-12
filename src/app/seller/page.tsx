@@ -50,6 +50,14 @@ export default function Page() {
 
   if (isLoading) return <LoadingSpinner />;
 
+  if (!isAuthenticated) {
+    router.push("/login");
+  }
+
+  if (isAuthenticated && !isSeller) {
+    router.push("/");
+  }
+
   if (isAuthenticated && isSeller) {
     router.push("/seller/products");
   }

@@ -25,6 +25,7 @@ import { firebaseDB, firebaseStorage } from "@/config/FirebaseConfig";
 export function useGetProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(firebaseDB, "products"),
@@ -34,12 +35,39 @@ export function useGetProducts() {
         );
 
         setProducts(data);
-        setIsLoading(false); // Set loading to false after data is received
+        setIsLoading(false);
       }
     );
 
     return () => unsubscribe();
   }, []);
+
+  return { products, isLoading };
+}
+
+export function useGetSellerProducts(sellerId: string) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!sellerId) return;
+
+    const q = query(
+      collection(firebaseDB, "products"),
+      where("sellerId", "==", sellerId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) =>
+        Product.fromFirestore(doc.id, doc.data())
+      );
+
+      setProducts(data);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [sellerId]);
 
   return { products, isLoading };
 }

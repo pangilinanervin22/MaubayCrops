@@ -13,10 +13,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isSeller, isLoading, isAuthenticated } = useAuthenticated();
+  const { isSeller, isLoading } = useAuthenticated();
   const router = useRouter();
 
-  if (isSeller === false && isLoading === false) router.push("/seller");
+  if (isSeller === false && !isLoading) router.push("/seller");
 
   return (
     <>
