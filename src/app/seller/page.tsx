@@ -10,12 +10,11 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 export default function Page() {
   const router = useRouter();
-  const { isAuthenticated, isLoading, isSeller } = useAuthenticated();
+  const { isSeller, isAuthenticated, isLoading } = useAuthenticated();
   const { login } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +24,6 @@ export default function Page() {
         break;
       case "password":
         setPassword(e.target.value);
-        break;
-      case "rememberMe":
-        setRememberMe(e.target.checked);
         break;
       default:
         break;
@@ -52,16 +48,10 @@ export default function Page() {
     }
   };
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   if (isAuthenticated && isSeller) {
-    router.push("/seller");
-  }
-
-  if (isAuthenticated) {
-    router.push("/");
+    router.push("/seller/products");
   }
 
   return (
@@ -71,12 +61,12 @@ export default function Page() {
           className="flex flex-col space-y-4 rounded-md p-8 w-full md:w-[28rem] h-fit bg-white"
           onSubmit={handleLogin}
         >
-          <h1 className="text-center font-bold text-3xl">Login</h1>
+          <h1 className="text-center font-bold text-3xl">Seller Login</h1>
           <label htmlFor="email">
             Email <span className="text-red-700">*</span>
           </label>
           <input
-            className="input"
+            className="border-2 border-gray-300 rounded-md p-2"
             type="email"
             id="email"
             name="email"
@@ -89,7 +79,7 @@ export default function Page() {
           </label>
           <div className="flex justify-between relative">
             <input
-              className="w-full input"
+              className="w-full border-2 border-gray-300 rounded-md p-2"
               type={isPasswordVisible ? "text" : "password"}
               id="password"
               name="password"
@@ -105,35 +95,17 @@ export default function Page() {
             />
           </div>
 
-          <h2
-            className="underline font-bold text-blue-950 cursor-pointer"
-            onClick={() => {
-              router.push("/forgot-password");
-            }}
-          >
-            Forgot Password?
-          </h2>
-          <div className="flex gap-1">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              name="rememberMe"
-              checked={rememberMe}
-              onChange={handleFormChange}
-            />
-            <label htmlFor="rememberMe">Remember Me</label>
-          </div>
+          {/* <h2
+                        className="underline font-bold text-primary cursor-pointer"
+                        onClick={() => {
+                            router.push("/forgot-password");
+                        }}
+                    >
+                        Forgot Password?
+                    </h2> */}
+
           <button className="btn-blue w-full p-3" type="submit">
             LOGIN
-          </button>
-          <button
-            className="font-bold text-primary bg-white p-3 w-full rounded-md transition-colors duration-200 hover:bg-extra-light-green"
-            onClick={() => {
-              router.push("/register");
-            }}
-            type="button"
-          >
-            Create New Account &gt;
           </button>
         </form>
       </article>

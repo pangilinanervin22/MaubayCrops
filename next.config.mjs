@@ -5,6 +5,7 @@ const nextConfig = {
       "m.media-amazon.com",
       "images-eu.ssl-images-amazon.com",
       "static.vecteezy.com",
+      "firebasestorage.googleapis.com",
     ],
   },
 };

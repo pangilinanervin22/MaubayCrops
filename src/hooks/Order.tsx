@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { firebaseDB } from "@/config/FirebaseConfig";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
-  addDoc,
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
   onSnapshot,
   setDoc,
-  updateDoc,
   writeBatch,
 } from "firebase/firestore";
+
 import { Product } from "@/interfaces/Product";
-import { toast } from "react-toastify";
 import { Order, OrderItem } from "@/interfaces/Account";
 import { Address } from "@/interfaces/Account";
+import { firebaseDB } from "@/config/FirebaseConfig";
 
 export function useGetAccountOrderList(accountId: string) {
   const [orderList, setOrderList] = useState<Order[]>([]);
@@ -79,6 +77,49 @@ export function useGetAllOrder() {
   return { orders, isLoading };
 }
 
+export function useGetOrdersBySeller(sellerId: string) {
+  const [orders, setOrderList] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!sellerId) return;
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      let allOrders: Order[] = [];
+      const accountsSnapshot = await getDocs(
+        collection(firebaseDB, `/accounts`)
+      );
+
+      for (let account of accountsSnapshot.docs) {
+        const accountOrdersSnapshot = await getDocs(
+          collection(firebaseDB, `/accounts/${account.id}/orders`)
+        );
+
+        accountOrdersSnapshot.forEach((doc) => {
+          const orderData = doc.data() as Order;
+          const orderItemsBySeller = orderData.orderItems.filter(
+            (item) => item.sellerId === sellerId
+          );
+
+          if (orderItemsBySeller.length > 0) {
+            allOrders.push({
+              ...orderData,
+              orderItems: orderItemsBySeller,
+            });
+          }
+        });
+      }
+
+      setOrderList(allOrders);
+      setIsLoading(false);
+    };
+
+    fetchOrders();
+  }, [sellerId]);
+
+  return { orders, isLoading };
+}
+
 export function usePlaceOrder() {
   const placeOrder = async (accountId: string, address: Address) => {
     try {
@@ -116,8 +157,7 @@ export function usePlaceOrder() {
 
           productRefArray.push(productRef);
           orderItemList.push({
-            ...(productSnap.data() as Product),
-            _id: productSnap.id,
+            ...Product.fromFirestore(productSnap.id, productSnap.data()),
             productId: cartItem.data().productId,
             orderItemQuantity: cartItem.data().cartItemQuantity,
           });

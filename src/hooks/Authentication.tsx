@@ -1,5 +1,4 @@
-import firebaseApp, { firebaseDB } from "@/config/FirebaseConfig";
-import Account, { Address } from "@/interfaces/Account";
+import { useEffect, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -7,7 +6,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { set } from "firebase/database";
 import {
   addDoc,
   collection,
@@ -18,9 +16,10 @@ import {
   setDoc,
   where,
 } from "firebase/firestore"; // Import the 'collection' function from 'firebase/firestore'
-import { doc } from "firebase/firestore/lite";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+import Account, { Address } from "@/interfaces/Account";
+import firebaseApp, { firebaseDB } from "@/config/FirebaseConfig";
 
 export function useAuthenticated() {
   const auth = getAuth(firebaseApp);
@@ -29,6 +28,8 @@ export function useAuthenticated() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -43,7 +44,18 @@ export function useAuthenticated() {
         if (querySnapshot.docs.length > 0) {
           setAccountId(querySnapshot.docs[0].id);
           setAccountData(querySnapshot.docs[0].data() as Account);
-          setIsAdmin(querySnapshot.docs[0].data().userType === "Admin");
+          switch (querySnapshot.docs[0].data().userType) {
+            case "Admin":
+              setIsAdmin(true);
+              break;
+            case "Seller":
+              setIsSeller(true);
+              break;
+            default:
+              setIsAdmin(false);
+              setIsSeller(false);
+              break;
+          }
         } else {
           setAccountId("");
           setAccountData(undefined);
@@ -90,6 +102,7 @@ export function useAuthenticated() {
     accountId,
     isLoading,
     isAdmin,
+    isSeller,
   };
 }
 
