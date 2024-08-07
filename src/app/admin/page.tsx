@@ -9,8 +9,9 @@ import { ShowPassword } from "@/components/ShowPassword";
 
 export default function Page() {
   const router = useRouter();
-  const { isAdmin, isAuthenticated, isLoading } = useAuthenticated();
+  const { isAdmin, isSeller, isAuthenticated, isLoading } = useAuthenticated();
   const { login } = useLogin();
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,9 +52,13 @@ export default function Page() {
     }
   };
 
-  if (isAuthenticated && isAdmin) {
+  if (isAuthenticated && (isAdmin || isSeller)) {
     router.push("/admin/orders");
   }
+
+  if (isAdmin == false)
+    return <> Not Admin </>
+
 
   return (
     <main>
